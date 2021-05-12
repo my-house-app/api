@@ -20,6 +20,7 @@
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
+const PORT = process.env.PORT || 3001
 const {
   User, Post, Comment, VisitDate, Image,
 } = require('./src/db.js');
@@ -36,7 +37,7 @@ conn.sync({ force: true }).then(() => {
   Comment.bulkCreate(comments);
   VisitDate.bulkCreate(visitDates);
   Image.bulkCreate(images);
-  server.listen(3001, () => {
-    console.log('%s listening at 3001'); // eslint-disable-line no-console
+  server.listen(PORT, () => {
+    console.log(`running on port ${PORT}`); // eslint-disable-line no-console
   });
 });
