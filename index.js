@@ -44,6 +44,7 @@ conn.sync({ force: false }).then(async () => {
   } else {
     console.log('La BD ya estaba cargada');
   }
+
   server.listen(PORT, () => {
     console.log(`%s listening at ${PORT}`); // eslint-disable-line no-console
   });
