@@ -1,5 +1,6 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable key-spacing */
+const { API_KEY_GEOCODE } = process.env;
 const { Op, Sequelize } = require('sequelize');
 // FUNCIONES AUXILIARES DE SEQUELIZE
 
@@ -76,10 +77,29 @@ function getCurrentPage(offset, limit) {
   return (offset + limit) / limit;
 }
 
+// FUNCIONES AUXILIARES PARA LA GEOLOCALIZACION
+// Get the coordinates with the address
+
+function getStreet(streetNumber) {
+  return streetNumber.replace(/\s/g, '+').replace(/#/g, '%23');
+}
+
+function getAddress(department, city, street, country) {
+  return `${country}+${department}+${city}+${street}`;
+}
+
+function getURLLocation(department, city, streetNumber, country = 'Colombia') {
+  const url = API_KEY_GEOCODE || 'RwOMALg8LILEQgTjBivW7TigzNNsyrG5mfGvpr6yZbw';
+  const street = getStreet(streetNumber);
+  const address = getAddress(department, city, street, country);
+  return encodeURI(address.concat(`&apiKey=${url}`));
+}
+
 module.exports = {
   buidlWhere,
   buildEqual,
   buildIlike,
   buildMinMax,
   getCurrentPage,
+  getURLLocation,
 };

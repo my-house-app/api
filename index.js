@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 //       .                    |~~             .
 //                   .     ___|___      .
 //                        ((((())))
@@ -28,18 +29,21 @@ const posts = require('./src/loaders/posts');
 const comments = require('./src/loaders/comments');
 const visitDates = require('./src/loaders/visitDates');
 const images = require('./src/loaders/images');
-const PORT = process.env.PORT || 3001
+const { cargarBD } = require('./src/controllers/posts');
+
+const PORT = process.env.PORT || 3001;
 // Syncing all the models at once.
-const forceValue = false
-conn.sync({ force: forceValue }).then(() => {
-  if(forceValue){
+conn.sync({ force: false }).then(async () => {
+  if (await cargarBD()) {
+    console.log('Cargando ...');
     User.bulkCreate(users);
     Post.bulkCreate(posts);
     Comment.bulkCreate(comments);
     VisitDate.bulkCreate(visitDates);
     Image.bulkCreate(images);
-   }
-  
+  } else {
+    console.log('La BD ya estaba cargada');
+  }
 
   server.listen(PORT, () => {
     console.log(`%s listening at ${PORT}`); // eslint-disable-line no-console

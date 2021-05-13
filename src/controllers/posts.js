@@ -158,9 +158,15 @@ async function updatePost(req, res) {
   res.send({ message: 'Se actualizó la publicacion Y' });
 }
 
+async function cargarBD() {
+  const { count } = await Post.findAndCountAll();
+  return count === 0;
+}
+
 module.exports = {
   addPost,
   deletePost,
   updatePost,
   getPosts,
+  cargarBD,
 };
