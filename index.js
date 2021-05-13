@@ -30,12 +30,17 @@ const visitDates = require('./src/loaders/visitDates');
 const images = require('./src/loaders/images');
 const PORT = process.env.PORT || 3001
 // Syncing all the models at once.
-conn.sync({ force: true }).then(() => {
-  User.bulkCreate(users);
-  Post.bulkCreate(posts);
-  Comment.bulkCreate(comments);
-  VisitDate.bulkCreate(visitDates);
-  Image.bulkCreate(images);
+const forceValue = false
+conn.sync({ force: forceValue }).then(() => {
+  if(forceValue){
+    User.bulkCreate(users);
+    Post.bulkCreate(posts);
+    Comment.bulkCreate(comments);
+    VisitDate.bulkCreate(visitDates);
+    Image.bulkCreate(images);
+   }
+  
+
   server.listen(PORT, () => {
     console.log(`%s listening at ${PORT}`); // eslint-disable-line no-console
   });
