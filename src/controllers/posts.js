@@ -41,7 +41,7 @@ function addPost(req, res) {
   const street = street_number.replace(/\s/g, '+').replace(/#/g, '%23');
   const address = 'Colombia+'.concat(department, '+', city, '+', street);
   const url = encodeURI(address.concat(`&apiKey=${apiKey}`));
-  console.log('url: ', url);
+  // console.log('url: ', url);
 
   axios.get(`https://geocode.search.hereapi.com/v1/geocode?q=${url}`)
     .then((r) => {
