@@ -39,7 +39,7 @@ function buildEqual(number) {
 
 /**
    * Construye una sentencia where en conjunto con varios and
-   * @param {* block es un objeto con los atributos que se van a usar para los filtro } block
+   * @param {* block es un objeto con los atributos que se van a usar para los filtros } block
    * @returns Las condiciones de busqueda: where atributo1 and atributo2 and ...
    */
 function buidlWhere(block) {
@@ -63,6 +63,26 @@ function buidlWhere(block) {
   if (block.elevator)     query.push({ elevator:     buildEqual(block.elevator) });
   if (block.security)     query.push({ security:     buildEqual(block.security) });
   if (block.garden)       query.push({ garden:       buildEqual(block.garden) });
+  if (block.status)       query.push({ status:       buildEqual(block.status) });
+  return { [Sequelize.Op.and]: query };
+}
+/**
+   * Construye una sentencia where en conjunto con varios and
+   * @param {* block es un objeto con los atributos que se van a usar para los filtros } block
+   * @returns Las condiciones de busqueda: where atributo1 and atributo2 and ...
+   */
+function buidlWhereUser(block) {
+  // eslint-disable-next-line no-shadow
+  const query = [];
+  if (block.email)         query.push({ email:        buildIlike(block.email) });
+  if (block.name)          query.push({ name:         buildIlike(block.name) });
+  if (block.city)          query.push({ city:         buildIlike(block.city) });
+  if (block.phone)         query.push({ phone:        buildEqual(block.phone) });// integer
+  if (block.photo)         query.push({ photo:        buildIlike(block.photo) });
+  if (block.password)      query.push({ password:     buildIlike(block.password) });
+  if (block.street_number) query.push({ street_number:buildIlike(block.street_number) });
+  if (block.zip_code)      query.push({ zip_code:     buildIlike(block.zip_code) });
+  if (block.type)          query.push({ type:         buildIlike(block.type) });
   return { [Sequelize.Op.and]: query };
 }
 
@@ -95,6 +115,12 @@ function getURLLocation(department, city, streetNumber, country = 'Colombia') {
   return encodeURI(address.concat(`&apiKey=${url}`));
 }
 
+function isRegEx(id) {
+  const regex = new RegExp(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+  );
+  return regex.test(id);
+}
 module.exports = {
   buidlWhere,
   buildEqual,
@@ -102,4 +128,6 @@ module.exports = {
   buildMinMax,
   getCurrentPage,
   getURLLocation,
+  buidlWhereUser,
+  isRegEx,
 };

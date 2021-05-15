@@ -3,7 +3,7 @@
 /* eslint-disable camelcase */
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
-const { Post, Image } = require('../db.js');
+const { Post, Image, User } = require('../db.js');
 const {
   buidlWhere, getCurrentPage,
 } = require('../utils');
@@ -96,10 +96,10 @@ function addPost(req, res) {
 // http://localhost:3001/posts?city=med&neighborhood=pol&priceMin=0&priceMax=100000000
 async function getPosts(req, res) {
   const limit =  Number(req.query.limit)  || 10;
-  const page = Number(req.query.page) || 1;// falta una validacion
+  const page = Number(req.query.page)     || 1;// falta una validacion
   const offset = (page * limit) - limit;
-  const atributo = req.query.atributo || null;
-  const orden =    req.query          || null;
+  const atributo = req.query.atributo   || null;
+  const orden =    req.query.orden      || null;
   const block = {
     post_name:    req.query.post_name      || '',
     city:         req.query.city           || '',
@@ -113,16 +113,27 @@ async function getPosts(req, res) {
     rooms:     Number(req.query.rooms)     || null,
     bathrooms: Number(req.query.bathrooms) || null,
     years:     Number(req.query.years)     || null,
-    pool:        req.query.pool || null,
-    backyard:    req.query.pool || null,
-    gym:         req.query.gym  || null,
-    bbq:         req.query.bbq  || null,
+    pool:        req.query.pool        || null,
+    backyard:    req.query.backyard    || null,
+    gym:         req.query.gym         || null,
+    bbq:         req.query.bbq         || null,
     parking_lot: req.query.parking_lot || null,
-    elevator:    req.query.elevator || null,
-    security:    req.query.security || null,
-    garden:      req.query.garden   || null,
+    elevator:    req.query.elevator    || null,
+    security:    req.query.security    || null,
+    garden:      req.query.garden      || null,
+    id:          req.query.id          || null,
   };
 
+  if (block.id) {
+    // si me envian un id tengo que verificar si es un usuario o un admin el que me pide la info
+    const user = await User.findByPk(block.id, { attributes: ['id', 'type'] });
+    if (user.type === 'User') {
+      block.status = 'Available';
+    }
+  } else {
+    // si no me envian un id, es un visitante y solamente le envio lo disponible
+    block.status = 'Available';
+  }
   const queryPost = {
     limit,
     offset,
