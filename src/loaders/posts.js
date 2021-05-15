@@ -49,6 +49,7 @@ const posts = rawData.map(
     parking_lot: Boolean(mnrogarajes),
     elevator: Math.random() < 0.5,
     security: Math.random() < 0.5,
+    status: 'Available',
   }),
 );
 
