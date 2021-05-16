@@ -6,7 +6,7 @@ const axios = require('axios');
 const { isRegEx } = require('../utils.js');
 const { Post, Image, User } = require('../db.js');
 const {
-  buidlWhere, getCurrentPage,
+  buidlWhere, getCurrentPage, isRegEx
 } = require('../utils');
 
 function addPost(req, res) {
@@ -124,9 +124,9 @@ async function getPosts(req, res) {
     garden:      req.query.garden      || null,
     id:          req.query.id          || null,
   };
-  console.log('id true o false: ',!!block.id);
+
   if (block.id && isRegEx(block.id)) {
-    console.log('busco el id en BD');
+
     // si me envian un id tengo que verificar si es un usuario o un admin el que me pide la info
     const user = await User.findByPk(block.id, { attributes: ['id', 'type'] });
     if (user.type === 'User') {
