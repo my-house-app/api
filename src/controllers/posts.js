@@ -6,7 +6,7 @@ const axios = require('axios');
 const { isRegEx } = require('../utils.js');
 const { Post, Image, User } = require('../db.js');
 const {
-  buidlWhere, getCurrentPage, isRegEx
+  buidlWhere, getCurrentPage
 } = require('../utils');
 
 function addPost(req, res) {
