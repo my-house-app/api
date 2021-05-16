@@ -1,5 +1,5 @@
 const errorHandler = function (err, req, res, next) {
-  console.log("err.message: ", err.message);
+  console.log("err.message: ", err.stack);
   res.status(500).send('algo salio mal en el server..');
 
 };

@@ -129,11 +129,12 @@ async function getPosts(req, res) {
 
     // si me envian un id tengo que verificar si es un usuario o un admin el que me pide la info
     const user = await User.findByPk(block.id, { attributes: ['id', 'type'] });
-    if (user.type === 'User') {
+    
+    if (user?.type === 'User') {
       console.log('Sos usuario registrado, comun');
       block.status = 'Available';
     } else {
-      console.log('Sos usuario registrado, admin o SuperAdmin -> ', user.type);
+      console.log('Sos usuario registrado, admin o SuperAdmin -> ', user?.type);
     }
   } else {
     console.log('No hay id, sos usuario no registrado');
