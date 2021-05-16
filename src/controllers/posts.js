@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const { Post, Image, User } = require('../db.js');
 const {
-  buidlWhere, getCurrentPage,
+  buidlWhere, getCurrentPage, isRegEx
 } = require('../utils');
 
 function addPost(req, res) {
@@ -124,7 +124,7 @@ async function getPosts(req, res) {
     id:          req.query.id          || null,
   };
 
-  if (block.id) {
+  if (block.id && isRegEx(block.id)) {
     // si me envian un id tengo que verificar si es un usuario o un admin el que me pide la info
     const user = await User.findByPk(block.id, { attributes: ['id', 'type'] });
     if (user.type === 'User') {
