@@ -3,6 +3,7 @@
 /* eslint-disable camelcase */
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
+const { isRegEx } = require('../utils.js');
 const { Post, Image, User } = require('../db.js');
 const {
   buidlWhere, getCurrentPage, isRegEx
@@ -125,23 +126,37 @@ async function getPosts(req, res) {
   };
 
   if (block.id && isRegEx(block.id)) {
+
     // si me envian un id tengo que verificar si es un usuario o un admin el que me pide la info
     const user = await User.findByPk(block.id, { attributes: ['id', 'type'] });
     if (user.type === 'User') {
+      console.log('Sos usuario registrado, comun');
       block.status = 'Available';
+    } else {
+      console.log('Sos usuario registrado, admin o SuperAdmin -> ', user.type);
     }
   } else {
+    console.log('No hay id, sos usuario no registrado');
     // si no me envian un id, es un visitante y solamente le envio lo disponible
     block.status = 'Available';
   }
+  console.log('limit: ', limit);
+  console.log('offset: ', offset);
+  console.log('page: ', page);
   const queryPost = {
     limit,
     offset,
     where: buidlWhere(block),
-    include: {
-      model: Image,
-      attributes: ['id', 'photo'],
-    },
+    include: 
+      [{
+        model: Image,
+        attributes: ['id', 'photo'],
+      },{
+        model: User,
+        // attributes: ['id', 'photo'],
+      }]
+      
+    ,
     attributes: {
       exclude:['createdAt', 'updatedAt'],
     },
