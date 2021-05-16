@@ -1,11 +1,10 @@
 const express = require('express');
-const 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const routes = require('./routes/index.js');
 const errorHandler = require('./middleware/errorHandler.js');
-
+const cors = require('cors')
 require('./db.js');
 
 const server = express();
@@ -19,12 +18,12 @@ server.use(cookieParser());
 server.use(morgan('dev'));
 
 
-var corsOptions = {
+const corsOptions = {
   origin: '*',
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200, 
 };
 
-app.use(cors(corsOptions));
+server.use(cors(corsOptions));
 
 
 
