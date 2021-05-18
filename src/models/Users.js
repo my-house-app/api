@@ -57,6 +57,6 @@ module.exports = (sequelize) => {
       //    type: DataTypes.ARRAY,
       //  },
     },
-    { createdAt: 'created', updatedAt: 'updated' }
+    { createdAt: 'created', updatedAt: 'updated' },
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-multi-spaces */
 /* eslint-disable key-spacing */
 /* eslint-disable camelcase */
@@ -6,7 +7,7 @@ const axios = require('axios');
 const { isRegEx } = require('../utils.js');
 const { Post, Image, User } = require('../db.js');
 const {
-  buidlWhere, getCurrentPage
+  buidlWhere, getCurrentPage,
 } = require('../utils');
 
 function addPost(req, res) {
@@ -126,19 +127,18 @@ async function getPosts(req, res) {
   };
 
   if (block.id && isRegEx(block.id)) {
-
     // si me envian un id tengo que verificar si es un usuario o un admin el que me pide la info
     const user = await User.findByPk(block.id, { attributes: ['id', 'type'] });
-    
-    if (user?.type === 'User') {
+
+    if (user && user.type === 'User') {
       console.log('Sos usuario registrado, comun');
       block.status = 'Available';
     } else {
-      console.log('Sos usuario registrado, admin o SuperAdmin -> ', user?.type);
+      console.log('Sos usuario registrado, admin o SuperAdmin -> ', user.type);
     }
   } else {
-    console.log('No hay id, sos usuario no registrado');
     // si no me envian un id, es un visitante y solamente le envio lo disponible
+    console.log('No hay id, sos usuario no registrado');
     block.status = 'Available';
   }
   console.log('limit: ', limit);
@@ -148,26 +148,35 @@ async function getPosts(req, res) {
     limit,
     offset,
     where: buidlWhere(block),
-    include: 
-      [{
-        model: Image,
-        attributes: ['id', 'photo'],
-      },{
-        model: User,
-        // attributes: ['id', 'photo'],
-      }]
-      
-    ,
+    // include:
+    //   [{
+    //     model: Image,
+    //     attributes: ['id', 'photo'],
+    //   }, {
+    //     model: User,
+    //     // attributes: ['id', 'photo'],
+    //   }],
     attributes: {
       exclude:['created', 'updated'],
     },
   };
-
+  // const { count:cantidad, rows:publicaciones } = await Post.findAndCountAll(queryPost);
+  // console.log('cantidad: ', `${cantidad}`);
   if (atributo && orden) {
     queryPost.order = [[atributo, orden]];
   }
+  queryPost.include = [{
+    model: Image,
+    attributes: ['id', 'photo'],
+  }, {
+    model: User,
+    // attributes: ['id', 'photo'],
+  }];
 
   const { count, rows } = await Post.findAndCountAll(queryPost);
+  console.log('count: ', `${count}`);
+  const lastPage = Math.ceil(count / limit);
+  if (page > lastPage) return res.status(404).send({ message: 'Invalid Request', lastPage });
 
   return res.status(200).json(
     {
