@@ -52,7 +52,7 @@ async function getUsers(req, res) {
   queryUser.include = { all: true, nested: true };
   const { rows } = await User.findAndCountAll(queryUser);
 
-  return res.send({ count, users: rows, currentPage: getCurrentPage(offset, limit), });
+  return res.send({ count, users: rows, currentPage: getCurrentPage(offset, limit) });
 }
 
 async function getBookings(req, res) {
@@ -65,21 +65,20 @@ async function getBookings(req, res) {
   const queryBooking = {
     limit,
     offset,
-    include: [ { model:Post },{ model: User }],
+    include: [{ model:Post }, { model: User }],
     attributes: {
       exclude:['createdAt', 'updatedAt'],
     },
-    // duplicating: false,
   };
   const { count } = await VisitDate.findAndCountAll({});
   console.log(' count: ', count);
-  // const { rows } = await VisitDate.findAndCountAll({ include: [ { model:Post },{ model: User }] });
   const { rows } = await VisitDate.findAndCountAll(queryBooking);
   console.log(' rows: ', rows);
-  return res.send({ count, bookings: rows, currentPage: getCurrentPage(offset, limit), });
+
+  return res.send({ count, bookings: rows, currentPage: getCurrentPage(offset, limit) });
 }
 
 module.exports = {
   getUsers,
-  getBookings
+  getBookings,
 };

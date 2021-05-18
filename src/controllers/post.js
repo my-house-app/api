@@ -5,7 +5,7 @@
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const { Post, User, Image } = require('../db.js');
-const { getURLLocation } = require('../utils');
+const { getURLLocation, isRegEx } = require('../utils');
 /* cambié Post por proeperty porque Posts esta vacia hay que definir bien como es el flow
   porque creo que tenemos un problema de que mmostrar @rennyGalindez
 */
@@ -93,18 +93,23 @@ async function updatePost(req, res) {
 }
 
 async function createPost(req, res) {
-  // falta el id del usuario
   const {
     department,
     city,
     street_number,
-    idUser,
+    idUser, // es obligatorio
     images, // es ['https://image1','https://image2',...]
   } = req.body;
 
+  if (!isRegEx(idUser)) return res.status(400).send({ message: 'Invalid user Id. ' });
+  const user = await User.findByPk(idUser);
+  if (!user) {
+    return res.status(400).send({ message: 'Post can not create due to user id is undefined or invalid. ' });
+  }
+
   const coordinates = {
-    longitude: '',
-    latitude: '',
+    longitude: null,
+    latitude: null,
   };
 
   if (department && city && street_number) {
@@ -147,29 +152,19 @@ async function createPost(req, res) {
     security: req.body.security,
   };
 
-  // const post = await Post.findByPk(id, { include: { model: Image } });
   const post = await Post.create(attributesPost);
-  const user = await User.findByPk(idUser);
   user.setPosts(post);
 
-  for (let i = 0; i < images.length; i++) {
-    // creo la imagen
-    // relaciono la imagen con el post
-    const image = await Image.create({ photo: images[i] });
-    post.setImages(image);
+  if (images) {
+    for (let i = 0; i < images.length; i++) {
+      // creo la imagen
+      // relaciono la imagen con el post
+      const image = await Image.create({ photo: images[i] });
+      post.setImages(image);
+    }
   }
-  // const user = await User.findByPk(id, {
-  //   include: { all: true, nested: true },
-  // });
-  // for (const key in post.dataValues) {
-  //   if (upDatePost[key]) {
-  //     console.log(`Se actualizo el atributo: ${key} de ${post[key]} a -> ${upDatePost[key]}`);
-  //     post[key] = upDatePost[key];
-  //   }
-  // }
 
-  // await post.save();
-  return res.send({ message: 'Updated post. ', post });
+  return res.send({ message: 'Created post. ', post });
 }
 
 // http://localhost:3001/post/c56e930c-5fae-4aee-82f7-f8673e3176f8
