@@ -9,6 +9,7 @@
 const { v4: uuidv4 } = require('uuid');
 const { User } = require('../db.js');
 const { isRegEx } = require('../utils.js');
+const bcrypt = require('bcrypt');
 // ABM
 
 // Example
@@ -32,8 +33,8 @@ async function addUser(req, res) {
     id: uuidv4(),
     email: req.body.email,
     name: req.body.name,
-    password: req.body.password,
-    phone: Number(req.body.phone),
+    password: bcrypt.hashSync(req.body.password, 1),
+    phone: req.body.phone && Number(req.body.phone),
     photo: req.body.photo,
     city: req.body.city,
     street_number: req.body.street_number,
@@ -41,9 +42,12 @@ async function addUser(req, res) {
     type: req.body.type,
     status: req.body.status,
   };
+  try {
   const user = await User.create(createUser);
-
   res.send({ message: 'Se creo exitosamente un nuevo Usuario!', user });
+  } catch (error) {
+    res.send(error.errors[0].message)
+  }
 }
 
 // http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62B189281A0D
@@ -60,11 +64,12 @@ async function deleteUser(req, res) {
 // http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62b189281a0d
 // Mas un body con los atributos a actualizar
 async function updateUser(req, res) {
+  
   const { id } = req.params;
   const upDateUser = {
     email: req.body.email,
     name: req.body.name,
-    password: req.body.password,
+    password: bcrypt.hashSync(req.body.password, 1),
     phone: req.body.phone,
     photo: req.body.photo,
     city: req.body.city,
@@ -73,18 +78,19 @@ async function updateUser(req, res) {
     type: req.body.type,
     status: req.body.status,
   };
-
+  
   const user = await User.findByPk(id);
-
+  
   for (const key in user.dataValues) {
     if (upDateUser[key]) {
       console.log(`Se actualizo el atributo: ${key} de ${user[key]} a -> ${upDateUser[key]}`);
       user[key] = upDateUser[key];
     }
   }
-
+  
   await user.save();
   res.send({ message: `Se actualizó el usuario ${user.name}` });
+
 }
 
 module.exports = {
