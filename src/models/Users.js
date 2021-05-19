@@ -19,7 +19,11 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
         isEmail: true,
-        // unique: true,
+        unique: {
+          args: true,
+          msg: 'Oops. Looks like you already have an account with this email address. Please try to login.',
+          fields: [sequelize.fn('lower', sequelize.col('email'))]
+        },
       },
       password: {
         type: DataTypes.STRING,
