@@ -54,6 +54,7 @@ for (let i = 1; i < mergedNames.length; i++) {
     street_number: '',
     zip_code: '',
     favorites: '',
+    externalId: '',
   });
 }
 
