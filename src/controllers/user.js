@@ -94,9 +94,25 @@ async function updateUser(req, res) {
 
 }
 
+async function findOrCreateGoogleUser(req, res) {
+
+  const [user, created] = await User.findOrCreate({
+    where: { externalId: req.body.externalId },
+    defaults: {
+      id: uuidv4(),
+      email: req.body.email,
+      name: req.body.name,
+      password: req.body.externalId
+    }
+  }); 
+
+  return res.send({ user });
+}
+
 module.exports = {
   getUserById,
   addUser,
   deleteUser,
   updateUser,
+  findOrCreateGoogleUser,
 };
