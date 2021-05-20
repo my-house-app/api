@@ -33,7 +33,7 @@ async function addUser(req, res) {
     id: uuidv4(),
     email: req.body.email,
     name: req.body.name,
-    password: bcrypt.hashSync(req.body.password, 1),
+    password: req.body.externalId || bcrypt.hashSync(req.body.password, 1),
     phone: req.body.phone && Number(req.body.phone),
     photo: req.body.photo,
     city: req.body.city,
@@ -41,6 +41,7 @@ async function addUser(req, res) {
     zip_code: req.body.zip_code,
     type: req.body.type,
     status: req.body.status,
+    externalId: req.body.externalId
   };
   try {
   const user = await User.create(createUser);
