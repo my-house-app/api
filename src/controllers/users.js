@@ -55,6 +55,7 @@ async function getUsers(req, res) {
   return res.send({ count, users: rows, currentPage: getCurrentPage(offset, limit) });
 }
 
+// Traen todos los bookings, para que lo ve un usuario admin o superAdmin
 async function getBookings(req, res) {
   const limit =  Number(req.query.limit)  || 10;
   const page = Number(req.query.page)     || 1;// falta una validacion
@@ -75,7 +76,13 @@ async function getBookings(req, res) {
   const { rows } = await VisitDate.findAndCountAll(queryBooking);
   console.log(' rows: ', rows);
 
-  return res.send({ count, bookings: rows, currentPage: getCurrentPage(offset, limit) });
+  return res.send(
+    {
+      count,
+      bookings: rows,
+      currentPage: getCurrentPage(offset, limit),
+    },
+  );
 }
 
 module.exports = {
