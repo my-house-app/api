@@ -15,9 +15,33 @@ for (let i = 0; i < 200; i++) {
   visitDates.push({
     id: uuidv4(),
     date: randomDate(new Date(), new Date(2022, 0, 1)),
+    title: `Reserva ${i}`,
+    // start: randomDate(new Date(), new Date(2022, 0, 1, 12, 0, 0)),
+    // end: randomDate(new Date(), new Date(2022, 0, 1, 13, 0, 0)),
+    status: 'Confirmed',
     userId: users[Math.floor(Math.random() * users.length)].id,
     postId: posts[Math.floor(Math.random() * posts.length)].id,
   });
 }
 
+// id: {
+//   type: DataTypes.UUID,
+//   primaryKey: true,
+// },
+// // date: {
+// //   type: DataTypes.DATE,
+// //   allowNull: false,
+// // },
+// title: {
+//   type: DataTypes.STRING,
+//   allowNull: false,
+// },
+// start: {
+//   type: DataTypes.DATE,
+//   allowNull: false,
+// },
+// end: {
+//   type: DataTypes.DATE,
+//   allowNull: false,
+// },
 module.exports = visitDates;
