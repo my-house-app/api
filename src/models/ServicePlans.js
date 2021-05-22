@@ -9,8 +9,8 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       primaryKey: true,
     },
-    name: {
-      type: DataTypes.STRING,
+    plan: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     description: {
@@ -19,6 +19,11 @@ module.exports = (sequelize) => {
       defaultValue: 'Descripción vacía',
     },
     price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    numberPhotos: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,

@@ -1,4 +1,5 @@
 const mercadopago = require('mercadopago');
+const { ServicePlans } = require('../db.js');
 const { v4: uuidv4 } = require('uuid');
 
 const {
@@ -21,7 +22,6 @@ function Mercadopago(req, res) {
   };
   mercadopago.preferences.create(preference)
     .then((r) => {
-      console.log(r);
       global.id = r.body.id;
       res.json({ id: global.id, init_point: r.body.init_point });
     }).catch((error) => {
@@ -29,9 +29,29 @@ function Mercadopago(req, res) {
     });
 }
 
+async function createPlan(req, res) {
+  const {
+    plan, description, price, numberPhotos,
+  } = req.body;
+  const id = uuidv4();
+  await ServicePlans.create({
+    id,
+    plan,
+    description,
+    price,
+    numberPhotos,
+  });
+  res.json({ message: 'successfully created plan' });
+}
+
+async function getPlans(req, res) {
+  const plans = await ServicePlans.findAll();
+  res.json(plans);
+}
+
 function pay(req, res) {
   const mp = new mercadopago(PROD_ACCESS_TOKEN);
-  const {id} = req.params
+  const { id } = req.params
   // console.info("Buscando el id", id)
   mp.get('/v1/payments/search', { status: 'pending' })// {"external_reference":id})
     .then((resultado) => {
@@ -46,8 +66,9 @@ function pay(req, res) {
     });
 }
 
-
 module.exports = {
   Mercadopago,
+  createPlan,
+  getPlans,
   pay,
 };
