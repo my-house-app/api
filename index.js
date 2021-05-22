@@ -33,7 +33,7 @@ const { cargarBD } = require('./src/controllers/posts');
 
 const PORT = process.env.PORT || 3001;
 // Syncing all the models at once.
-conn.sync({ force: true }).then(async () => {
+conn.sync({ force: false }).then(async () => {
   if (await cargarBD()) {
     console.log('Cargando ...');
     User.bulkCreate(users);
