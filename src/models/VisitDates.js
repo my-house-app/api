@@ -13,5 +13,22 @@ module.exports = (sequelize) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.STRING,
+      isIn: [['Confirmed', 'Pending', 'Expired']],
+    },
+    title: {
+      type: DataTypes.STRING,
+      // allowNull: false,
+    },
+    // start: {
+    //   type: DataTypes.DATE,
+    //   allowNull: false,
+    // },
+    // end: {
+    //   type: DataTypes.DATE,
+    //   allowNull: false,
+    // },
+    // idPost, idInteresado, title, start, end,
   });
 };

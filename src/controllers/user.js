@@ -7,9 +7,9 @@
 /* eslint-disable key-spacing */
 /* eslint-disable no-multi-spaces */
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
 const { User } = require('../db.js');
 const { isRegEx } = require('../utils.js');
-const bcrypt = require('bcrypt');
 // ABM
 
 // Example
@@ -41,13 +41,13 @@ async function addUser(req, res) {
     zip_code: req.body.zip_code,
     type: req.body.type,
     status: req.body.status,
-    externalId: req.body.externalId
+    externalId: req.body.externalId,
   };
   try {
-  const user = await User.create(createUser);
-  res.send({ message: 'Se creo exitosamente un nuevo Usuario!', user });
+    const user = await User.create(createUser);
+    return res.send({ message: 'Se creo exitosamente un nuevo Usuario!', user });
   } catch (error) {
-    res.send(error.errors[0].message)
+    return res.send(error.errors[0].message);
   }
 }
 
@@ -65,7 +65,6 @@ async function deleteUser(req, res) {
 // http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62b189281a0d
 // Mas un body con los atributos a actualizar
 async function updateUser(req, res) {
-  
   const { id } = req.params;
   const upDateUser = {
     email: req.body.email,
@@ -79,35 +78,33 @@ async function updateUser(req, res) {
     type: req.body.type,
     status: req.body.status,
   };
-  
+
   const user = await User.findByPk(id);
-  
+
   for (const key in user.dataValues) {
     if (upDateUser[key]) {
       console.log(`Se actualizo el atributo: ${key} de ${user[key]} a -> ${upDateUser[key]}`);
       user[key] = upDateUser[key];
     }
   }
-  
-  await user.save();
-  res.send({ message: `Se actualizó el usuario ${user.name}` });
 
+  await user.save();
+  return res.send({ message: `Se actualizó el usuario ${user.name}` });
 }
 
 async function findOrCreateGoogleUser(req, res) {
-
   const [user, created] = await User.findOrCreate({
     where: { externalId: req.body.externalId },
     defaults: {
       id: uuidv4(),
       email: req.body.email,
       name: req.body.name,
-      password: req.body.externalId
-    }, 
-      include: { 
-        all: true, nested: true
+      password: req.body.externalId,
+    },
+      include: {
+        all: true, nested: true,
       },
-  }); 
+  });
 
   return res.send({ user });
 }

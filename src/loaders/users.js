@@ -55,6 +55,8 @@ for (let i = 1; i < mergedNames.length; i++) {
     zip_code: '',
     favorites: '',
     externalId: '',
+    type: 'User',
+    status: 'Available',
   });
 }
 
