@@ -1,8 +1,43 @@
+/* eslint-disable key-spacing */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
 const { v4: uuidv4 } = require('uuid');
 const { VisitDate, Post, User } = require('../db.js');
+
+async function getBooking(req, res) {
+  const { id } = req.params;
+  const booking = await VisitDate.findByPk(id, { include: { all: true, nested: true } });
+  if (!booking) return res.status(404).send({ message: 'Id booking doesnt exist' });
+  const bookingSended = {
+    id: booking.id,
+    date: booking.date,
+    status: booking.status,
+    post:{
+      postId: booking.postId,
+      title: booking.title,
+      status: booking.post.status,
+      city: booking.post.city,
+      photo: booking.post.photo,
+    },
+    owner:{
+      userId: booking.post.userId,
+      name:  booking.post.user.name,
+      email: booking.post.user.email,
+      phone: booking.post.user.phone,
+      photo: booking.post.user.photo,
+    },
+    interested: {
+      userId: booking.user.id,
+      name:  booking.user.name,
+      email: booking.user.email,
+      phone: booking.user.phone,
+      photo: booking.user.photo,
+    },
+
+  };
+  return res.send({ booking: bookingSended });
+}
 
 async function addBooking(req, res) {
   //   const reserva = {
@@ -68,4 +103,5 @@ module.exports = {
   addBooking,
   deleteBooking,
   updateBooking,
+  getBooking,
 };
