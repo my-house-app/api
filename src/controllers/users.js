@@ -5,7 +5,6 @@
 /* eslint-disable key-spacing */
 /* eslint-disable no-multi-spaces */
 const { User, VisitDate, Post } = require('../db.js');
-// const { v4: uuidv4 } = require('uuid');
 const { buidlWhereUser, getCurrentPage } = require('../utils.js');
 
 async function getUsers(req, res) {

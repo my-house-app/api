@@ -16,8 +16,9 @@ async function getBooking(req, res) {
     post:{
       postId: booking.postId,
       title: booking.title,
-      status: booking.status,
+      status: booking.post.status,
       city: booking.post.city,
+      photo: booking.post.photo,
     },
     owner:{
       userId: booking.post.userId,
@@ -35,7 +36,7 @@ async function getBooking(req, res) {
     },
 
   };
-  return res.send({ bookingSended });
+  return res.send({ booking: bookingSended });
 }
 
 async function addBooking(req, res) {
