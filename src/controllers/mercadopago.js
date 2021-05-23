@@ -19,8 +19,7 @@ function Mercadopago(req, res) {
     items: [req.body],
     external_reference: `${idOrden}`,
     back_urls: {
-      success: 'http://localhost:3000/mercadopago/pagos',
-      failure: 'http://localhost:3000/mercadopago/pagos',
+      success: 'http://localhost:3000/create/success',
     },
     //auto_return: 'approved',
     payment_methods: {
@@ -71,10 +70,9 @@ async function getPlans(req, res) {
 
 async function createOrder(req, res) {
   const {
-    userId, servicePlanId, status, paymentStatus, paymentId,
+    userId, servicePlanId, status, paymentStatus, paymentId, id,
   } = req.body;
-  const id = uuidv4();
-  const order = await Order.create({
+  await Order.create({
     id,
     status,
     paymentId,
@@ -82,10 +80,18 @@ async function createOrder(req, res) {
     userId,
     servicePlanId,
   });
-  console.log('prueba______', order)
-  // await order.setServicePlans(planId);
-  // await order.setUser(userId);
   res.json({ message: 'successfully created order' });
+}
+
+async function getOrder(req, res) {
+  const { id } = req.params;
+  if (id) {
+    const plans = await Order.findByPk(id);
+    res.json(plans);
+  } else {
+    const plans = await Order.findAll();
+    res.json(plans);
+  }
 }
 
 function pay(req, res) {
@@ -110,5 +116,6 @@ module.exports = {
   createPlan,
   getPlans,
   createOrder,
+  getOrder,
   pay,
 };

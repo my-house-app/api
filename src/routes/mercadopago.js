@@ -4,6 +4,7 @@ const {
   createPlan,
   getPlans,
   createOrder,
+  getOrder,
   pay,
 } = require('../controllers/mercadopago.js');
 const middlewareError = require('../middleware/middlewareError.js');
@@ -16,8 +17,11 @@ router
 
 router
   .route('/order')
-  .get(middlewareError(getPlans))
+  .get(middlewareError(getOrder))
   .post(middlewareError(createOrder));
+router
+  .route('/order/:id')
+  .get(middlewareError(getOrder));
 router
   .route('/pagos/:id')
   .get(pay);
