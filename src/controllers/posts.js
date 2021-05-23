@@ -148,14 +148,7 @@ async function getPosts(req, res) {
     limit,
     offset,
     where: buidlWhere(block),
-    // include:
-    //   [{
-    //     model: Image,
-    //     attributes: ['id', 'photo'],
-    //   }, {
-    //     model: User,
-    //     // attributes: ['id', 'photo'],
-    //   }],
+    order:[['premium', 'DESC']],
     attributes: {
       exclude:['created', 'updated'],
     },
@@ -163,7 +156,8 @@ async function getPosts(req, res) {
   // const { count:cantidad, rows:publicaciones } = await Post.findAndCountAll(queryPost);
   // console.log('cantidad: ', `${cantidad}`);
   if (atributo && orden) {
-    queryPost.order = [[atributo, orden]];
+    // queryPost.order = [[atributo, orden]];
+    queryPost.order.push([atributo, orden]);
   }
   queryPost.include = [{
     model: Image,
