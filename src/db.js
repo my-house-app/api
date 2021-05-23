@@ -57,8 +57,8 @@ User.hasMany(Comment);
 Comment.belongsTo(Post);
 Post.hasMany(Comment);
 
-Order.hasOne(ServicePlans);
-ServicePlans.belongsTo(Order);
+ServicePlans.hasMany(Order);
+Order.belongsTo(ServicePlans);
 
 User.hasMany(Order);
 Order.belongsTo(User);
