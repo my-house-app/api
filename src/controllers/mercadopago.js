@@ -1,5 +1,5 @@
 const mercadopago = require('mercadopago');
-const { ServicePlans } = require('../db.js');
+const { ServicePlans, Order } = require('../db.js');
 const { v4: uuidv4 } = require('uuid');
 
 const {
@@ -10,15 +10,35 @@ function Mercadopago(req, res) {
   const idOrden = uuidv4();
   mercadopago.configure({
     access_token: PROD_ACCESS_TOKEN,
+    theme: {
+      elementsColor: '#da1c1c',
+      headerColor: '#da1c1c',
+    },
   });
   const preference = {
     items: [req.body],
     external_reference: `${idOrden}`,
     back_urls: {
-      success: 'http://localhost:3001/mercadopago/pagos',
-      failure: 'http://localhost:3001/mercadopago/pagos',
-      pending: 'http://localhost:3001/mercadopago/pagos',
+      success: 'http://localhost:3000/mercadopago/pagos',
+      failure: 'http://localhost:3000/mercadopago/pagos',
     },
+    //auto_return: 'approved',
+    payment_methods: {
+      excluded_payment_methods: [
+        {
+          // id: 'master',
+        },
+      ],
+      excluded_payment_types: [
+        {
+          id: 'ticket',
+        },
+        {
+          id: 'bank_transfer',
+        },
+      ],
+    },
+    binary_mode: true,
   };
   mercadopago.preferences.create(preference)
     .then((r) => {
@@ -49,6 +69,25 @@ async function getPlans(req, res) {
   res.json(plans);
 }
 
+async function createOrder(req, res) {
+  const {
+    userId, planId, status, paymentStatus, paymentId,
+  } = req.body;
+  const id = uuidv4();
+  const order = await Order.create({
+    id,
+    status,
+    paymentId,
+    paymentStatus,
+    userId,
+    planId,
+  });
+  console.log('prueba______', order)
+  // await order.setServicePlans(planId);
+  // await order.setUser(userId);
+  res.json({ message: 'successfully created order' });
+}
+
 function pay(req, res) {
   const mp = new mercadopago(PROD_ACCESS_TOKEN);
   const { id } = req.params
@@ -70,5 +109,6 @@ module.exports = {
   Mercadopago,
   createPlan,
   getPlans,
+  createOrder,
   pay,
 };

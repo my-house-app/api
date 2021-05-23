@@ -10,20 +10,16 @@ module.exports = (sequelize) => {
       primaryKey: true,
     },
     status: {
-      type: DataTypes.ENUM('created', 'processing', 'cancelled', 'completed'),
+      type: DataTypes.ENUM('expired', 'active'),
       allowNull: false,
     },
-    payment_id: {
+    paymentId: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    payment_status: {
+    paymentStatus: {
       type: DataTypes.STRING,
       defaultValue: '',
-    },
-    merchant_order_id: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0,
     },
   });
 };
