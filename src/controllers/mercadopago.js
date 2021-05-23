@@ -71,7 +71,7 @@ async function getPlans(req, res) {
 
 async function createOrder(req, res) {
   const {
-    userId, planId, status, paymentStatus, paymentId,
+    userId, servicePlanId, status, paymentStatus, paymentId,
   } = req.body;
   const id = uuidv4();
   const order = await Order.create({
@@ -80,7 +80,7 @@ async function createOrder(req, res) {
     paymentId,
     paymentStatus,
     userId,
-    planId,
+    servicePlanId,
   });
   console.log('prueba______', order)
   // await order.setServicePlans(planId);
