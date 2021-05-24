@@ -1,30 +1,22 @@
-const { Router } = require('express');
-const router = Router();
-
 const nodemailer = require('nodemailer');
-const appEmail = process.env.EMAIL
-const appPass = process.env.PASSWORD
+
+const appEmail = process.env.EMAIL;
+const appPass = process.env.PASSWORD;
 
 const paymentConfirmation = async (req, res) => {
-    const {
-        name,
-        email,
-        image,
-        title,
-        price,
-        plan,
-        date
-     } = req.body
+  const {
+    name, email, image, title, price, plan, date,
+  } = req.body;
 
-let transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: appEmail || 'myhouseapp86@gmail.com',
-        pass: appPass || 'Houseapp.123'
-    }
-});
+      user: appEmail || 'myhouseapp86@gmail.com',
+      pass: appPass || 'Houseapp.123',
+    },
+  });
 
-let mailOptions = {
+  const mailOptions = {
     from: '"My House App" <myhouseapp86@gmail.com>',
     to: email,
     subject: 'Payment Confirmation',
@@ -34,7 +26,7 @@ let mailOptions = {
     <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td style="padding-right: 0px;padding-left: 0px;" align="center">
-            <img align="center" border="0"  src="https://central.vercel.app/static/media/logoHorizontal-6pt.2a4f1e31.svg" alt="Logo" title="Logo"  width="200"/>
+            <img align="center" border="0"  src='https://lh3.googleusercontent.com/pw/ACtC-3d1f7Zbjgy2JdZoOoZ-a1km-O3si30DgzofokfZscWQGLpfphKVWgqLpeVDKWCxrMEvWufxWT4lvqf-4WUXDQ-aNiy8BBEUSka6vankGtUZ6j4YyoYituKojGZDWV8jMKPxYplGYIhyThN6Ie5f0i0=w805-h249-no?authuser=0' alt="Logo" title="Logo"  width="200"/>
           </td>
         </tr>
       </table>
@@ -131,12 +123,11 @@ let mailOptions = {
   </table>
   
 
-            `
+            `,
+  };
+
+  const outbox = await transporter.sendMail(mailOptions);
+  res.send(outbox);
 };
 
-const outbox = await transporter.sendMail(mailOptions);
-res.send(outbox)
-
-}
-
-module.exports =  paymentConfirmation;
+module.exports = paymentConfirmation;
