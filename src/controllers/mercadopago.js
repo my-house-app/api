@@ -15,11 +15,26 @@ function Mercadopago(req, res) {
       headerColor: '#da1c1c',
     },
   });
+  const {
+    quantity, title, unit_price, description, category_id, userEmail, userName
+  } = req.body;
+  const dataItems = {
+    quantity,
+    title,
+    unit_price,
+    description,
+    category_id,
+  };
   const preference = {
-    items: [req.body],
+    items: [dataItems],
+    payer: {
+      name: userName,
+
+      email: userEmail,
+    },
     external_reference: `${idOrden}`,
     back_urls: {
-      success: `http://localhost:3000/create/success/${req.body.category_id}/${req.body.title}`,
+      success: `https://central.vercel.app/create/success/${req.body.category_id}/${req.body.title}`,
     },
     // auto_return: 'approved',
     payment_methods: {
