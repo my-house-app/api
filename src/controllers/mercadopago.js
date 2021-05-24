@@ -19,9 +19,9 @@ function Mercadopago(req, res) {
     items: [req.body],
     external_reference: `${idOrden}`,
     back_urls: {
-      success: 'http://localhost:3000/create/success',
+      success: `http://localhost:3000/create/success/${req.body.category_id}/${req.body.title}`,
     },
-    //auto_return: 'approved',
+    // auto_return: 'approved',
     payment_methods: {
       excluded_payment_methods: [
         {
@@ -80,7 +80,7 @@ async function createOrder(req, res) {
     userId,
     servicePlanId,
   });
-  res.json({ message: 'successfully created order' });
+  res.json({ message: 'successfully created order', id });
 }
 
 async function getOrder(req, res) {
