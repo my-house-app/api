@@ -9,19 +9,30 @@
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const { User } = require('../db.js');
-const { isRegEx } = require('../utils.js');
+const { isRegEx, buildIlike } = require('../utils.js');
 // ABM
 
 // Example
 // http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62b189281a0d
 async function getUserById(req, res) {
   const { id } = req.params;
+  const externalId = id;
+
+  let { rows: user } = await User.findAndCountAll(
+    {
+      where: { externalId: buildIlike(externalId) },
+      include: { all: true, nested: true },
+    },
+  );
+  if (user.length) {
+    return res.send({ user: user[0] });
+  }
 
   if (!isRegEx(id)) {
     return res.send({ message: 'El Id pasado no es válido' });
   }
 
-  const user = await User.findByPk(id, {
+  user = await User.findByPk(id, {
     include: { all: true, nested: true },
   });
 
@@ -101,9 +112,9 @@ async function findOrCreateGoogleUser(req, res) {
       name: req.body.name,
       password: req.body.externalId,
     },
-      include: {
-        all: true, nested: true,
-      },
+    include: {
+      all: true, nested: true,
+    },
   });
 
   return res.send({ user });
