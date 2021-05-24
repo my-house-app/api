@@ -103,6 +103,7 @@ async function createPost(req, res) {
 
   if (!isRegEx(idUser)) return res.status(400).send({ message: 'Invalid user Id. ' });
   const user = await User.findByPk(idUser);
+  console.log('user:', user);
   if (!user) {
     return res.status(400).send({ message: 'Post can not create due to user id is undefined or invalid. ' });
   }

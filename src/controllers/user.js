@@ -69,7 +69,7 @@ async function updateUser(req, res) {
   const upDateUser = {
     email: req.body.email,
     name: req.body.name,
-    password: bcrypt.hashSync(req.body.password, 1),
+    password: req.body.password ? bcrypt.hashSync(req.body.password, 1) : null,
     phone: req.body.phone,
     photo: req.body.photo,
     city: req.body.city,
