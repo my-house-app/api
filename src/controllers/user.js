@@ -103,6 +103,14 @@ async function updateUser(req, res) {
   return res.send({ message: `Se actualizó el usuario ${user.name}` });
 }
 
+async function getGoogleUserById(req, res) {
+  const { id } = req.params;
+  const user = await User.findOne({
+    where: { externalId: id },
+  });
+  return res.send({ user });
+}
+
 async function findOrCreateGoogleUser(req, res) {
   const [user, created] = await User.findOrCreate({
     where: { externalId: req.body.externalId },
@@ -126,4 +134,5 @@ module.exports = {
   deleteUser,
   updateUser,
   findOrCreateGoogleUser,
+  getGoogleUserById,
 };
