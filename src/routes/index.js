@@ -6,7 +6,7 @@ const postRouter = require('./post');
 const postMercadopago = require('./mercadopago');
 const booking = require('./visitDate.js');
 const bookings = require('./visitDates.js');
-const mailer = require('./mailer')
+const mailer = require('./mailer');
 
 const router = Router();
 
