@@ -5,9 +5,12 @@ const appPass = process.env.PASSWORD;
 
 const paymentConfirmation = async (req, res) => {
   const {
-    name, email, image, title, price, plan, date,
+    name, email, title, price, plan, date,
   } = req.body;
-
+  let { image } = req.body;
+  if (!image) {
+    image = 'https://lh3.googleusercontent.com/pw/ACtC-3fZYkI4kz0PEqSoGDzcJPc08Hqwm0sXdwxGyqOGiloNDaWSiRqRrKLT7dZ0mYkAF1rvFodETvWyjR6Tqx6yE3EhhbQAE0uJVnpUyVni3ambTduxt120ZyfUuXgL7A-0Neryv4gAV4M4ND2C9e74PhQ=w860-h600-no?authuser=0'
+  }
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
