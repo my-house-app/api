@@ -119,6 +119,7 @@ async function findOrCreateGoogleUser(req, res) {
       email: req.body.email,
       name: req.body.name,
       password: req.body.externalId,
+      type: 'User',
     },
     include: {
       all: true, nested: true,
