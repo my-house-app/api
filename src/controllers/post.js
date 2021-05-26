@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-return-await */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-restricted-syntax */
@@ -5,7 +7,7 @@
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const { Post, User, Image } = require('../db.js');
-const { getURLLocation, isRegEx } = require('../utils');
+const { getURLLocation, isRegEx, buildFindByArray } = require('../utils');
 /* cambié Post por proeperty porque Posts esta vacia hay que definir bien como es el flow
   porque creo que tenemos un problema de que mmostrar @rennyGalindez
 */
@@ -102,8 +104,8 @@ async function createPost(req, res) {
   } = req.body;
 
   if (!isRegEx(idUser)) return res.status(400).send({ message: 'Invalid user Id. ' });
-  const user = await User.findByPk(idUser);
-  console.log('user:', user);
+  const user = await User.findByPk(idUser, { include: { model: Post } });
+
   if (!user) {
     return res.status(400).send({ message: 'Post can not create due to user id is undefined or invalid. ' });
   }
@@ -154,16 +156,21 @@ async function createPost(req, res) {
   };
 
   const post = await Post.create(attributesPost);
-  user.setPosts(post);
 
-  if (images) {
-    for (let i = 0; i < images.length; i++) {
-      // creo la imagen
-      // relaciono la imagen con el post
-      const image = await Image.create({ photo: images[i] });
-      post.setImages(image);
-    }
-  }
+  const image = await Image.create({ id: uuidv4(), photo: images });
+  post.setImages(image);
+
+  // if (images) {
+  //   for (let i = 0; i < images.length; i++) {
+  //     // creo la imagen
+  //     // relaciono la imagen con el post
+  //     const image = await Image.create({ photo: images[i] });
+  //     post.setImages(image);
+  //   }
+  // }
+  const arrayPost = await findPostById(user.posts.map((publicacion) => publicacion.id));
+  arrayPost.push(post);
+  user.setPosts(arrayPost);
 
   return res.send({ message: 'Created post. ', post });
 }
@@ -179,6 +186,13 @@ async function deletePost(req, res) {
   return res.send({ message: 'Deleted post. ', post });
 }
 
+async function findPostById(idPosts) {
+  return await Post.findAll({
+    where: {
+      id: buildFindByArray(idPosts),
+    },
+  });
+}
 module.exports = {
   getPostById,
   updatePost,

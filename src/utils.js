@@ -86,6 +86,14 @@ function buidlWhereUser(block) {
   return { [Sequelize.Op.and]: query };
 }
 
+/**
+ * Busca todos los valores del array
+ * @param {* array tiene todos los elementos que son buscados} array
+ * @returns Un objeto de busqueda: [Sequelize.Op.in]:
+ */
+function buildFindByArray(array) {
+  return { [Sequelize.Op.in]: array };
+}
 // FUNCIONES AUXILIARES PARA EL PAGINADO
 /**
  * Obtiene el numero de la pagina actual con respecto al offset y al limit
@@ -130,4 +138,5 @@ module.exports = {
   getURLLocation,
   buidlWhereUser,
   isRegEx,
+  buildFindByArray,
 };
