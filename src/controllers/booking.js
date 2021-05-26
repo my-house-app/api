@@ -99,9 +99,20 @@ async function deleteBooking(req, res) {
   await booking.destroy();
   return res.send({ message: 'Se elimino exitosamente el booking!', booking });
 }
+
+async function getAllMyBookings(req, res) {
+  // bookings/:id
+  const { id } = req.params;
+  const user = await User.findByPk(id, { include: { all: true, nested: true } });
+  if (!user) return res.status(404).send({ message: 'Id user doesnt exist' });
+  console.log('visitDates', user.visitDates);
+  return res.send({ bookings:  user.visitDates });
+}
+
 module.exports = {
   addBooking,
   deleteBooking,
   updateBooking,
   getBooking,
+  getAllMyBookings,
 };
