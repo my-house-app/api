@@ -34,7 +34,7 @@ function Mercadopago(req, res) {
     },
     external_reference: `${idOrden}`,
     back_urls: {
-      success: `https://central.vercel.app/create/success/${req.body.category_id}/${req.body.title}`,
+      success: `hhttps://my-house-app.vercel.app/success/${req.body.category_id}/${req.body.title}`,
     },
     // auto_return: 'approved',
     payment_methods: {
@@ -109,6 +109,25 @@ async function getOrder(req, res) {
   }
 }
 
+function payOrder(req, res) {
+  const { id } = req.params;
+  const filters = {
+    site_id: 'MCO',
+    external_reference: id,
+  };
+  mercadopago.payment.search({
+    qs: filters,
+  }).then((data) => {
+    res.render('payment-search/search-result', {
+      result: data,
+    });
+  }).catch((error) => {
+    res.render('500', {
+      error,
+    });
+  });
+}
+
 function pay(req, res) {
   const mp = new mercadopago(PROD_ACCESS_TOKEN);
   const { id } = req.params
@@ -132,5 +151,6 @@ module.exports = {
   getPlans,
   createOrder,
   getOrder,
+  payOrder,
   pay,
 };
