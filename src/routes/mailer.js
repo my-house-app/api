@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const paymentConfirmation = require('../controllers/mailer');
+const { paymentConfirmation, sendBooking } = require('../controllers/mailer');
 const middlewareError = require('../middleware/middlewareError.js');
 
 router.route('/payment').post(middlewareError(paymentConfirmation));
+router.route('/booking').post(middlewareError(sendBooking));
 
 module.exports = router;

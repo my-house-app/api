@@ -1,7 +1,9 @@
-const nodemailer = require('nodemailer');
-
+/* eslint-disable key-spacing */
+/* eslint-disable import/no-unresolved */
 const appEmail = process.env.EMAIL;
 const appPass = process.env.PASSWORD;
+const nodemailer = require('nodemailer');
+const { VisitDate } = require('../db');
 
 const paymentConfirmation = async (req, res) => {
   const {
@@ -9,7 +11,7 @@ const paymentConfirmation = async (req, res) => {
   } = req.body;
   let { image } = req.body;
   if (!image) {
-    image = 'https://lh3.googleusercontent.com/pw/ACtC-3fZYkI4kz0PEqSoGDzcJPc08Hqwm0sXdwxGyqOGiloNDaWSiRqRrKLT7dZ0mYkAF1rvFodETvWyjR6Tqx6yE3EhhbQAE0uJVnpUyVni3ambTduxt120ZyfUuXgL7A-0Neryv4gAV4M4ND2C9e74PhQ=w860-h600-no?authuser=0'
+    image = 'https://lh3.googleusercontent.com/pw/ACtC-3fZYkI4kz0PEqSoGDzcJPc08Hqwm0sXdwxGyqOGiloNDaWSiRqRrKLT7dZ0mYkAF1rvFodETvWyjR6Tqx6yE3EhhbQAE0uJVnpUyVni3ambTduxt120ZyfUuXgL7A-0Neryv4gAV4M4ND2C9e74PhQ=w860-h600-no?authuser=0';
   }
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -133,4 +135,145 @@ const paymentConfirmation = async (req, res) => {
   res.send(outbox);
 };
 
-module.exports = paymentConfirmation;
+async function sendBooking(req, res) {
+  const { idbooking } = req.body;
+  const image = 'https://raw.githubusercontent.com/my-house-app/central/main/client/src/images/blue_slim/logoCirculo.png';
+  const booking = await VisitDate.findByPk(idbooking, { include: { all: true, nested: true } });
+  if (!booking) return res.status(404).send({ message: 'Id booking doesnt exist' });
+  const bookingSended = {
+    id: booking.id,
+    date: booking.date,
+    status: booking.status,
+    post:{
+      postId: booking.postId,
+      title: booking.title,
+      status: booking.post.status,
+      city: booking.post.city,
+      photo: booking.post.photo,
+    },
+    owner:{
+      userId: booking.post.userId,
+      name:  booking.post.user.name,
+      email: booking.post.user.email,
+      phone: booking.post.user.phone,
+      photo: booking.post.user.photo,
+    },
+    interested: {
+      userId: booking.user.id,
+      name:  booking.user.name,
+      email: booking.user.email,
+      phone: booking.user.phone,
+      photo: booking.user.photo,
+    },
+  };
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: appEmail || 'myhouseapp86@gmail.com',
+      pass: appPass || 'Houseapp.123',
+
+    },
+    host: 'smtp.ethereal.email',
+    port: 587,
+    // auth: {
+    //   user: 'alec52@ethereal.email',
+    //   pass: 'jV8x7N2X83gCSC837S',
+    // },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const maillist = [
+    bookingSended.owner.email,
+    bookingSended.interested.email,
+  ];
+
+  const mailOptions = {
+    from: '"My House App" <myhouseapp86@gmail.com>',
+    to: maillist,
+    subject: 'Reserva de la publicación',
+    html: `
+    <div style="display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: stretch;
+                margin: 4% 4%;
+                padding: 2.5rem;
+                border: solid 3px #d0d0d0;
+                border-radius: 12px;
+                display: block;
+                overflow: hidden;">
+        <div style="display: flex;flex-direction: row;justify-content: left;">
+          <img style= "width: 10rem; height: 10rem;" src="${image}" alt='logo' />
+          <div style="font-size: 24px;">
+            <h1>Booking</h1>
+            <h3>my house app s.r.l</h3>
+          </div>
+
+        </div>
+        <hr />
+
+        <div className={styles.bodyBooking}>
+          <div style="background-color: #146880;
+          padding: 0.5rem;
+          border-radius: 0.49rem 0.5rem 0 0;
+          display: flex;
+          justify-content: center;
+          color: white;
+          z-index: -100;" >
+            <label>${bookingSended.status}</label> &nbsp;&nbsp;
+            <label> ${new Date(bookingSended.date).toLocaleDateString('es-ES')}</label>
+          </div>
+          <div>
+            <label>Lugar: </label>&nbsp;&nbsp;
+            <label> ${bookingSended.post.city}</label>
+          </div>
+          <div>
+            <label>Estado de la publicación: </label>&nbsp;&nbsp;
+            <label>${bookingSended.post.status}</label>
+          </div>
+          <hr style={{margin:'1%'}}/>
+          <h2>Datos del propietario</h2>
+          <div>
+            <label>Nombre</label>&nbsp;&nbsp;
+            <label>${bookingSended.owner.name}</label>
+          </div>
+          <div>
+            <label>Telefono</label>&nbsp;&nbsp;
+            <label>${bookingSended.owner.phone}</label>
+          </div>
+          <div>
+            <label>Email</label>&nbsp;&nbsp;
+            <label>${bookingSended.owner.email}</label>
+          </div>
+          <hr style={{margin:'1%'}}/>
+          <h2>Datos del interesado</h2>
+          <div>
+            <label>Nombre</label>&nbsp;&nbsp;
+            <label>${bookingSended.interested.name}</label>
+          </div>
+          <div>
+            <label>Telefono</label>&nbsp;&nbsp;
+            <label>${bookingSended.interested.phone}</label>
+          </div>
+          <div>
+            <label>Email</label>&nbsp;&nbsp;
+            <label>${bookingSended.interested.email}</label>
+          </div>
+        </div>
+        <br/>
+        <p>http://localhost:3000/post/${booking.postId}<p/>
+        <sub>No tiene validez</sub>
+      </div>
+    `,
+  };
+  const outbox = await transporter.sendMail(mailOptions);
+  return res.send(outbox);
+}
+
+module.exports = {
+  paymentConfirmation,
+  sendBooking,
+};
