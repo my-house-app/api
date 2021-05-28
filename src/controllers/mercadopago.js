@@ -34,7 +34,8 @@ function Mercadopago(req, res) {
     },
     external_reference: `${idOrden}`,
     back_urls: {
-      success: `hhttps://my-house-app.vercel.app/success/${req.body.category_id}/${req.body.title}`,
+      // success: `http://localhost:3000/success/${req.body.category_id}/${req.body.title}`,
+      success: `https://my-house-app.vercel.app/success/${req.body.category_id}/${req.body.title}`,
     },
     // auto_return: 'approved',
     payment_methods: {
@@ -87,15 +88,20 @@ async function createOrder(req, res) {
   const {
     userId, servicePlanId, status, paymentStatus, paymentId, id,
   } = req.body;
-  await Order.create({
-    id,
-    status,
-    paymentId,
-    paymentStatus,
-    userId,
-    servicePlanId,
-  });
-  res.json({ message: 'successfully created order', id });
+  try {
+    await Order.create({
+      id,
+      status,
+      paymentId,
+      paymentStatus,
+      userId,
+      servicePlanId,
+    });
+    res.json({ message: 'successfully created order', id });
+  } catch (err) {
+    const plans = await Order.findAll();
+    res.json(plans);
+  }
 }
 
 async function getOrder(req, res) {
