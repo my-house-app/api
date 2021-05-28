@@ -1,41 +1,18 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable key-spacing */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
 const { v4: uuidv4 } = require('uuid');
 const { VisitDate, Post, User } = require('../db.js');
+const { updateBookingRepo, buidlBookingObject } = require('../repositorio/booking.js');
 
 async function getBooking(req, res) {
   const { id } = req.params;
   const booking = await VisitDate.findByPk(id, { include: { all: true, nested: true } });
   if (!booking) return res.status(404).send({ message: 'Id booking doesnt exist' });
-  const bookingSended = {
-    id: booking.id,
-    date: booking.date,
-    status: booking.status,
-    post:{
-      postId: booking.postId,
-      title: booking.title,
-      status: booking.post.status,
-      city: booking.post.city,
-      photo: booking.post.photo,
-    },
-    owner:{
-      userId: booking.post.userId,
-      name:  booking.post.user.name,
-      email: booking.post.user.email,
-      phone: booking.post.user.phone,
-      photo: booking.post.user.photo,
-    },
-    interested: {
-      userId: booking.user.id,
-      name:  booking.user.name,
-      email: booking.user.email,
-      phone: booking.user.phone,
-      photo: booking.user.photo,
-    },
+  const bookingSended = buidlBookingObject(booking);
 
-  };
   return res.send({ booking: bookingSended });
 }
 
@@ -49,9 +26,9 @@ async function addBooking(req, res) {
   const {
     idPost, idInterested, title,
   } = req.body;
-  console.log('idPost: ', idPost);
-  console.log('id_interesado: ', idInterested);
-  console.log('title: ', title);
+  // console.log('idPost: ', idPost);
+  // console.log('id_interesado: ', idInterested);
+  // console.log('title: ', title);
   if (!idInterested || !idPost) return res.status(400).send({ message: 'Missing data id post o user interested' });
   const user = await User.findByPk(idInterested);
   const post = await Post.findByPk(idPost);
@@ -78,16 +55,7 @@ async function updateBooking(req, res) {
     date,
     status,
   };
-  const booking = await VisitDate.findByPk(id);
-  if (!booking) return res.status(404).send({ message: 'Id booking doesnt exist' });
-
-  for (const key in booking.dataValues) {
-    if (upDateBooking[key]) {
-      console.log(`Se actualizo el atributo: ${key} de ${booking[key]} a -> ${upDateBooking[key]}`);
-      booking[key] = upDateBooking[key];
-    }
-  }
-  await booking.save();
+  const booking = await updateBookingRepo(id, upDateBooking);// devuelve un booking
 
   return res.send({ message: 'The booking was updated!', booking });
 }

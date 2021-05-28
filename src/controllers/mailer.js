@@ -1,9 +1,11 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable key-spacing */
 /* eslint-disable import/no-unresolved */
 const appEmail = process.env.EMAIL;
 const appPass = process.env.PASSWORD;
 const nodemailer = require('nodemailer');
 const { VisitDate } = require('../db');
+const { buidlBookingObject } = require('../repositorio/booking');
 
 const paymentConfirmation = async (req, res) => {
   const {
@@ -140,46 +142,21 @@ async function sendBooking(req, res) {
   const image = 'https://raw.githubusercontent.com/my-house-app/central/main/client/src/images/blue_slim/logoCirculo.png';
   const booking = await VisitDate.findByPk(idbooking, { include: { all: true, nested: true } });
   if (!booking) return res.status(404).send({ message: 'Id booking doesnt exist' });
-  const bookingSended = {
-    id: booking.id,
-    date: booking.date,
-    status: booking.status,
-    post:{
-      postId: booking.postId,
-      title: booking.title,
-      status: booking.post.status,
-      city: booking.post.city,
-      photo: booking.post.photo,
-    },
-    owner:{
-      userId: booking.post.userId,
-      name:  booking.post.user.name,
-      email: booking.post.user.email,
-      phone: booking.post.user.phone,
-      photo: booking.post.user.photo,
-    },
-    interested: {
-      userId: booking.user.id,
-      name:  booking.user.name,
-      email: booking.user.email,
-      phone: booking.user.phone,
-      photo: booking.user.photo,
-    },
-  };
+  const bookingSended = buidlBookingObject(booking);
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: appEmail || 'myhouseapp86@gmail.com',
-      pass: appPass || 'Houseapp.123',
+    // service: 'gmail',
+    // auth: {
+    //   user: appEmail || 'myhouseapp86@gmail.com',
+    //   pass: appPass || 'Houseapp.123',
 
-    },
+    // },
     host: 'smtp.ethereal.email',
     port: 587,
-    // auth: {
-    //   user: 'alec52@ethereal.email',
-    //   pass: 'jV8x7N2X83gCSC837S',
-    // },
+    auth: {
+      user: 'alec52@ethereal.email',
+      pass: 'jV8x7N2X83gCSC837S',
+    },
     tls: {
       rejectUnauthorized: false,
     },
@@ -189,11 +166,14 @@ async function sendBooking(req, res) {
     bookingSended.owner.email,
     bookingSended.interested.email,
   ];
-
+  let msjSubject = 'Reserva de la publicación';
+  if (bookingSended.post.status === 'Not-available') {
+    msjSubject = 'Reserva cancelada';
+  }
   const mailOptions = {
     from: '"My House App" <myhouseapp86@gmail.com>',
     to: maillist,
-    subject: 'Reserva de la publicación',
+    subject: msjSubject, // 'Reserva de la publicación',
     html: `
     <div style="display: flex;
                 flex-direction: column;
@@ -264,7 +244,7 @@ async function sendBooking(req, res) {
           </div>
         </div>
         <br/>
-        <p>http://localhost:3000/post/${booking.postId}<p/>
+        <p><a>https://my-house-app.vercel.app</a></p>
         <sub>No tiene validez</sub>
       </div>
     `,

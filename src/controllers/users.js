@@ -8,16 +8,16 @@ const { User, VisitDate, Post } = require('../db.js');
 const { buidlWhereUser, getCurrentPage } = require('../utils.js');
 
 async function getUsers(req, res) {
-  const limit =  Number(req.query.limit)  || 10;
-  const page = Number(req.query.page)     || 1;// falta una validacion
+  const limit =  Number(req.query.limit)   || 10;
+  const page  =  Number(req.query.page)    || 1;// falta una validacion
   const offset = (page * limit) - limit;
-  const atributo = req.query.atributo   || null;
-  const orden =    req.query.orden      || null;
+  const atributo = req.query.atributo      || null;
+  const orden =    req.query.orden         || null;
   const block = {
     email:         req.query.email         || null,
-    name:         req.query.name         || null,
+    name:          req.query.name          || null,
     password:      req.query.password      || null,
-    phone:         Number(req.query.phone)         || null,
+    phone:         Number(req.query.phone) || null,
     photo:         req.query.photo         || null,
     city:          req.query.city          || null,
     street_number: req.query.street_number || null,
@@ -30,18 +30,9 @@ async function getUsers(req, res) {
     limit,
     offset,
     where: buidlWhereUser(block),
-    // include: { all: true, nested: true },
-    // include: [{},{}]
-    // include: {
-    //   model: Post,
-    //   include: {
-    //     model: VisitDates,
-    //   },
-    // },
     attributes: {
       exclude:['createdAt', 'updatedAt'],
     },
-    // duplicating: false,
   };
 
   if (atributo && orden) {
@@ -54,7 +45,7 @@ async function getUsers(req, res) {
   return res.send({ count, users: rows, currentPage: getCurrentPage(offset, limit) });
 }
 
-// Traen todos los bookings, para que lo ve un usuario admin o superAdmin
+// Traen todos los bookings, para que lo vea un usuario admin o superAdmin
 async function getBookings(req, res) {
   const limit =  Number(req.query.limit)  || 10;
   const page = Number(req.query.page)     || 1;// falta una validacion
