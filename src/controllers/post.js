@@ -6,8 +6,11 @@
 /* eslint-disable camelcase */
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
-const { Post, User, Image } = require('../db.js');
+const {
+  Post, User, Image,
+} = require('../db.js');
 const { getURLLocation, isRegEx, buildFindByArray } = require('../utils');
+const { updateBookingRepo } = require('../repositorio/booking');
 /* cambié Post por proeperty porque Posts esta vacia hay que definir bien como es el flow
   porque creo que tenemos un problema de que mmostrar @rennyGalindez
 */
@@ -168,7 +171,7 @@ async function createPost(req, res) {
   //     post.setImages(image);
   //   }
   // }
-  const arrayPost = await findPostById(user.posts.map((publicacion) => publicacion.id));
+  const arrayPost = await findPostsByIds(user.posts.map((publicacion) => publicacion.id));
   arrayPost.push(post);
   user.setPosts(arrayPost);
 
@@ -178,21 +181,39 @@ async function createPost(req, res) {
 // http://localhost:3001/post/c56e930c-5fae-4aee-82f7-f8673e3176f8
 async function deletePost(req, res) {
   const { id } = req.params;
-  const post = await Post.findByPk(id, { include: { model: Image } });
+  const post = await Post.findByPk(id, { include: { all: true, nested: true } });
   // 'Available', 'Expired', 'Not-available'
+
   post.status = 'Not-available';
   await post.save();
+
+  const idBookings = post.visitDates.map((booking) => booking.id);
+  const upDateBooking = {
+    title: null,
+    date: new Date(),
+    status: 'Cancelled',
+  };
+  // Cambiar el estado de todas sus reservas a 'Cancelled'
+  idBookings.forEach(async (idBooking) => {
+    await updateBookingRepo(idBooking, upDateBooking);// retorna un booking
+  });
 
   return res.send({ message: 'Deleted post. ', post });
 }
 
-async function findPostById(idPosts) {
+/**
+ * Busca todos los post por id que estan en un Array
+ * @param {* idPosts es un array de id de publicaciones} idPosts
+ * @returns Retorna un Array de objetos Post
+ */
+async function findPostsByIds(idPosts) {
   return await Post.findAll({
     where: {
       id: buildFindByArray(idPosts),
     },
   });
 }
+
 module.exports = {
   getPostById,
   updatePost,
