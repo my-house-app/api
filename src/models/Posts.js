@@ -97,5 +97,8 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       isIn: [['Available', 'Expired', 'Not-available']],
     },
+    active: {
+      type: DataTypes.BOOLEAN,
+    },
   });
 };

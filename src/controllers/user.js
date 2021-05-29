@@ -8,7 +8,7 @@
 /* eslint-disable no-multi-spaces */
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
-const { User } = require('../db.js');
+const { User, Post, VisitDate } = require('../db.js');
 const { isRegEx, buildIlike } = require('../utils.js');
 // ABM
 
@@ -16,25 +16,40 @@ const { isRegEx, buildIlike } = require('../utils.js');
 // http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62b189281a0d
 async function getUserById(req, res) {
   const { id } = req.params;
-  const externalId = id;
+  // const externalId = id;
 
-  let { rows: user } = await User.findAndCountAll(
-    {
-      where: { externalId: buildIlike(externalId) },
-      include: { all: true, nested: true },
-    },
-  );
-  if (user.length) {
-    return res.send({ user: user[0] });
-  }
+  // let { rows: user } = await User.findAndCountAll(
+  //   {
+  //     where: {
+  //       externalId: buildIlike(externalId),
+  //      }, // agregar where: { active: buildEqual(1) },
+  //     include: { all: true, nested: true },
+  //   },
+  // );
+  // if (user.length) {
+  //   return res.send({ user: user[0] });
+  // }
 
+  // Es el unico que está trabajando, preguntar si alguna vez puede llegar un externalId
   if (!isRegEx(id)) {
     return res.send({ message: 'El Id pasado no es válido' });
   }
 
-  user = await User.findByPk(id, {
-    include: { all: true, nested: true },
+  const user = await User.findByPk(id, {
+    // include: { all: true, nested: true },
+    include: [
+      {
+        model: Post,
+      },
+      {
+        model: VisitDate,
+      },
+      // {
+      //   model: Comment,
+      // },
+    ],
   });
+  // console.log('User: ', user.posts.filter((post) => post.active === true));
 
   return res.send({ user });
 }
@@ -62,7 +77,6 @@ async function addUser(req, res) {
   }
 }
 
-// http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62B189281A0D
 async function deleteUser(req, res) {
   const { id } = req.params;
   const user = await User.findByPk(id);
@@ -73,8 +87,6 @@ async function deleteUser(req, res) {
   return res.send({ message: 'Deleted user ', user });
 }
 
-// http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62b189281a0d
-// Mas un body con los atributos a actualizar
 async function updateUser(req, res) {
   const { id } = req.params;
   const upDateUser = {
@@ -94,7 +106,7 @@ async function updateUser(req, res) {
 
   for (const key in user.dataValues) {
     if (upDateUser[key]) {
-      console.log(`Se actualizo el atributo: ${key} de ${user[key]} a -> ${upDateUser[key]}`);
+      // console.log(`Se actualizo el atributo: ${key} de ${user[key]} a -> ${upDateUser[key]}`);
       user[key] = upDateUser[key];
     }
   }

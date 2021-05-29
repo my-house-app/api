@@ -50,6 +50,7 @@ const posts = rawData.map(
     elevator: Math.random() < 0.5,
     security: Math.random() < 0.5,
     status: 'Available',
+    active: true,
   }),
 );
 

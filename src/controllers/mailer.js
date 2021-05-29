@@ -145,18 +145,17 @@ async function sendBooking(req, res) {
   const bookingSended = buidlBookingObject(booking);
 
   const transporter = nodemailer.createTransport({
-    // service: 'gmail',
-    // auth: {
-    //   user: appEmail || 'myhouseapp86@gmail.com',
-    //   pass: appPass || 'Houseapp.123',
-
-    // },
+    service: 'gmail',
+    auth: {
+      user: appEmail || 'myhouseapp86@gmail.com',
+      pass: appPass || 'Houseapp.123',
+    },
     host: 'smtp.ethereal.email',
     port: 587,
-    auth: {
-      user: 'alec52@ethereal.email',
-      pass: 'jV8x7N2X83gCSC837S',
-    },
+    // auth: {
+    //   user: 'alec52@ethereal.email',
+    //   pass: 'jV8x7N2X83gCSC837S',
+    // },
     tls: {
       rejectUnauthorized: false,
     },
