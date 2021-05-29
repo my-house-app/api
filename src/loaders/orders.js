@@ -28,7 +28,7 @@ for (let i = 0; i < posts.length; i++) {
 }
 
 const orders = posts.map(({ id, userId }, index) => ({
-  id: uuidv4(),
+  id: index,
   postId: id,
   userId,
   date: dates[index].date,
