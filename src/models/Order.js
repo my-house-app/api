@@ -6,7 +6,7 @@ module.exports = (sequelize) => {
   // Defining model
   sequelize.define('order', {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
     },
     status: {
