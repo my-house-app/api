@@ -21,5 +21,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       defaultValue: '',
     },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   });
 };
