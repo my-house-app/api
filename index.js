@@ -22,11 +22,10 @@
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
 const {
-  User, Post, Comment, VisitDate, Image, ServicePlans, Order,
+  User, Post, VisitDate, Image, ServicePlans, Order,
 } = require('./src/db.js');
 const users = require('./src/loaders/users');
 const posts = require('./src/loaders/posts');
-const comments = require('./src/loaders/comments');
 const visitDates = require('./src/loaders/visitDates');
 const images = require('./src/loaders/images');
 const plans = require('./src/loaders/plans');
@@ -40,7 +39,6 @@ conn.sync({ force: true }).then(async () => {
     console.log('Cargando ...');
     User.bulkCreate(users);
     Post.bulkCreate(posts);
-    Comment.bulkCreate(comments);
     VisitDate.bulkCreate(visitDates);
     Image.bulkCreate(images);
     ServicePlans.bulkCreate(plans);
