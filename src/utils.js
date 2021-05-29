@@ -64,6 +64,7 @@ function buidlWhere(block) {
   if (block.security)     query.push({ security:     buildEqual(block.security) });
   if (block.garden)       query.push({ garden:       buildEqual(block.garden) });
   if (block.status)       query.push({ status:       buildEqual(block.status) });
+  if (block.active)       query.push({ active:       buildEqual(block.active) });
   return { [Sequelize.Op.and]: query };
 }
 /**

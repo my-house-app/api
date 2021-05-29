@@ -131,6 +131,7 @@ async function createPost(req, res) {
 
   const attributesPost = {
     id: uuidv4(),
+    active: true,
     post_name: req.body.post_name,
     premium: req.body.premium,
     status: req.body.status,
@@ -163,14 +164,6 @@ async function createPost(req, res) {
   const image = await Image.create({ id: uuidv4(), photo: images });
   post.setImages(image);
 
-  // if (images) {
-  //   for (let i = 0; i < images.length; i++) {
-  //     // creo la imagen
-  //     // relaciono la imagen con el post
-  //     const image = await Image.create({ photo: images[i] });
-  //     post.setImages(image);
-  //   }
-  // }
   const arrayPost = await findPostsByIds(user.posts.map((publicacion) => publicacion.id));
   arrayPost.push(post);
   user.setPosts(arrayPost);
@@ -182,9 +175,9 @@ async function createPost(req, res) {
 async function deletePost(req, res) {
   const { id } = req.params;
   const post = await Post.findByPk(id, { include: { all: true, nested: true } });
-  // 'Available', 'Expired', 'Not-available'
 
   post.status = 'Not-available';
+  post.active = false;
   await post.save();
 
   const idBookings = post.visitDates.map((booking) => booking.id);

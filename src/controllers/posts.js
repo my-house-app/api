@@ -94,11 +94,10 @@ function addPost(req, res) {
 }
 
 // Ejemplos de un pedido
-// http://localhost:3001/posts?city=med&neighborhood=pol&prop_type=Apartamento
 // http://localhost:3001/posts?city=med&neighborhood=pol&priceMin=0&priceMax=100000000
 async function getPosts(req, res) {
   const limit =  Number(req.query.limit)  || 10;
-  const page = Number(req.query.page)     || 1;// falta una validacion
+  const page = Number(req.query.page)     || 1;
   const offset = (page * limit) - limit;
   const atributo = req.query.atributo   || null;
   const orden =    req.query.orden      || null;
@@ -123,7 +122,10 @@ async function getPosts(req, res) {
     elevator:    req.query.elevator    || null,
     security:    req.query.security    || null,
     garden:      req.query.garden      || null,
+    // para el admin: id es de quien inicio sesion
     id:          req.query.id          || null,
+    active:      req.query.active      || null,
+    status:      req.query.status      || null,
   };
 
   if (block.id && isRegEx(block.id)) {
@@ -133,6 +135,7 @@ async function getPosts(req, res) {
     if (user && user.type === 'User') {
       console.log('Sos usuario registrado, comun');
       block.status = 'Available';
+      block.active = true;
     } else {
       console.log('Sos usuario registrado, admin o SuperAdmin -> ', user.type);
     }
@@ -140,10 +143,9 @@ async function getPosts(req, res) {
     // si no me envian un id, es un visitante y solamente le envio lo disponible
     console.log('No hay id, sos usuario no registrado');
     block.status = 'Available';
+    block.active = true;
   }
-  console.log('limit: ', limit);
-  console.log('offset: ', offset);
-  console.log('page: ', page);
+
   const queryPost = {
     limit,
     offset,
@@ -153,10 +155,8 @@ async function getPosts(req, res) {
       exclude:['created', 'updated'],
     },
   };
-  // const { count:cantidad, rows:publicaciones } = await Post.findAndCountAll(queryPost);
-  // console.log('cantidad: ', `${cantidad}`);
+
   if (atributo && orden) {
-    // queryPost.order = [[atributo, orden]];
     queryPost.order.push([atributo, orden]);
   }
   queryPost.include = [{
@@ -164,11 +164,12 @@ async function getPosts(req, res) {
     attributes: ['id', 'photo'],
   }, {
     model: User,
-    // attributes: ['id', 'photo'],
+    attributes: {
+      exclude:['password', 'created', 'updated'],
+    },
   }];
 
   const { count, rows } = await Post.findAndCountAll(queryPost);
-  console.log('count: ', `${count}`);
   const lastPage = Math.ceil(count / limit);
   if (page > lastPage) return res.status(404).send({ message: 'Invalid Request', lastPage });
 
@@ -181,13 +182,6 @@ async function getPosts(req, res) {
   );
 }
 
-async function deletePost(req, res) {
-  res.send({ message: 'Se borro la publicacion X' });
-}
-async function updatePost(req, res) {
-  res.send({ message: 'Se actualizó la publicacion Y' });
-}
-
 async function cargarBD() {
   const { count } = await Post.findAndCountAll();
   return count === 0;
@@ -195,8 +189,6 @@ async function cargarBD() {
 
 module.exports = {
   addPost,
-  deletePost,
-  updatePost,
   getPosts,
   cargarBD,
 };
