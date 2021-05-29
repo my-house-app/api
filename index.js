@@ -22,7 +22,7 @@
 const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
 const {
-  User, Post, Comment, VisitDate, Image, ServicePlans,
+  User, Post, Comment, VisitDate, Image, ServicePlans, Order,
 } = require('./src/db.js');
 const users = require('./src/loaders/users');
 const posts = require('./src/loaders/posts');
@@ -30,6 +30,7 @@ const comments = require('./src/loaders/comments');
 const visitDates = require('./src/loaders/visitDates');
 const images = require('./src/loaders/images');
 const plans = require('./src/loaders/plans');
+const orders = require('./src/loaders/orders');
 const { cargarBD } = require('./src/controllers/posts');
 
 const PORT = process.env.PORT || 3001;
@@ -43,6 +44,7 @@ conn.sync({ force: false }).then(async () => {
     VisitDate.bulkCreate(visitDates);
     Image.bulkCreate(images);
     ServicePlans.bulkCreate(plans);
+    Order.bulkCreate(orders);
   } else {
     console.log('La BD ya estaba cargada');
   }
