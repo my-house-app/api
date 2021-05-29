@@ -80,7 +80,7 @@ async function createPlan(req, res) {
 }
 
 async function getPlans(req, res) {
-  const plans = await ServicePlans.findAll({ include: { all: true, nested: true } });
+  const plans = await ServicePlans.findAll();
   res.json(plans);
 }
 
@@ -88,6 +88,7 @@ async function createOrder(req, res) {
   const {
     userId, servicePlanId, status, paymentStatus, paymentId, id,
   } = req.body;
+  const date = new Date();
   try {
     await Order.create({
       id,
@@ -96,10 +97,11 @@ async function createOrder(req, res) {
       paymentStatus,
       userId,
       servicePlanId,
+      date,
     });
     res.json({ message: 'successfully created order', id });
   } catch (err) {
-    const plans = await Order.findAll({ include: { all: true, nested: true } });
+    const plans = await Order.findAll();
     res.json(plans);
   }
 }
@@ -107,10 +109,10 @@ async function createOrder(req, res) {
 async function getOrder(req, res) {
   const { id } = req.params;
   if (id) {
-    const plans = await Order.findByPk(id, { include: { all: true, nested: true } });
+    const plans = await Order.findByPk(id);
     res.json(plans);
   } else {
-    const plans = await Order.findAll({ include: { all: true, nested: true } });
+    const plans = await Order.findAll();
     res.json(plans);
   }
 }

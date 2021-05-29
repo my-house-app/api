@@ -129,8 +129,10 @@ async function createPost(req, res) {
       .catch((e) => console.error("Couldn't fetch data", e));
   }
 
+  const id = req.body.id || uuidv4();
+
   const attributesPost = {
-    id: uuidv4(),
+    id,
     active: true,
     post_name: req.body.post_name,
     premium: req.body.premium,
