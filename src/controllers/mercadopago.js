@@ -80,7 +80,7 @@ async function createPlan(req, res) {
 }
 
 async function getPlans(req, res) {
-  const plans = await ServicePlans.findAll();
+  const plans = await ServicePlans.findAll({include: {all: true}});
   res.json(plans);
 }
 
@@ -109,10 +109,10 @@ async function createOrder(req, res) {
 async function getOrder(req, res) {
   const { id } = req.params;
   if (id) {
-    const plans = await Order.findByPk(id);
+    const plans = await Order.findByPk(id, {include: {all: true}});
     res.json(plans);
   } else {
-    const plans = await Order.findAll();
+    const plans = await Order.findAll({include: {all: true}});
     res.json(plans);
   }
 }
