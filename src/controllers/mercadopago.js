@@ -85,7 +85,7 @@ async function getPlans(req, res) {
 
 async function createOrder(req, res) {
   const {
-    userId, servicePlanId, status, paymentStatus, paymentId, id,
+    userId, servicePlanId, status, paymentStatus, paymentId, id, postId,
   } = req.body;
   const date = new Date();
   try {
@@ -97,6 +97,7 @@ async function createOrder(req, res) {
       userId,
       servicePlanId,
       date,
+      postId,
     });
     res.json({ message: 'successfully created order', id });
   } catch (err) {
