@@ -1,6 +1,5 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable key-spacing */
-const { API_KEY_GEOCODE } = process.env;
 const { Op, Sequelize } = require('sequelize');
 // FUNCIONES AUXILIARES DE SEQUELIZE
 
@@ -106,24 +105,6 @@ function getCurrentPage(offset, limit) {
   return (offset + limit) / limit;
 }
 
-// FUNCIONES AUXILIARES PARA LA GEOLOCALIZACION
-// Get the coordinates with the address
-
-function getStreet(streetNumber) {
-  return streetNumber.replace(/\s/g, '+').replace(/#/g, '%23');
-}
-
-function getAddress(department, city, street, country) {
-  return `${country}+${department}+${city}+${street}`;
-}
-
-function getURLLocation(department, city, streetNumber, country = 'Colombia') {
-  const url = API_KEY_GEOCODE || 'RwOMALg8LILEQgTjBivW7TigzNNsyrG5mfGvpr6yZbw';
-  const street = getStreet(streetNumber);
-  const address = getAddress(department, city, street, country);
-  return encodeURI(address.concat(`&apiKey=${url}`));
-}
-
 function isRegEx(id) {
   const regex = new RegExp(
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -136,7 +117,6 @@ module.exports = {
   buildIlike,
   buildMinMax,
   getCurrentPage,
-  getURLLocation,
   buidlWhereUser,
   isRegEx,
   buildFindByArray,
