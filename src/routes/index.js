@@ -7,9 +7,11 @@ const postMercadopago = require('./mercadopago');
 const booking = require('./visitDate.js');
 const bookings = require('./visitDates.js');
 const mailer = require('./mailer');
+const updater = require('./updater');
 
 const router = Router();
 
+router.use('/updater', updater);
 router.use('/user', user);
 router.use('/users', users);
 router.use('/post', postRouter);
