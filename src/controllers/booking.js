@@ -73,7 +73,7 @@ async function getAllMyBookings(req, res) {
   const { id } = req.params;
   const user = await User.findByPk(id, { include: { all: true, nested: true } });
   if (!user) return res.status(404).send({ message: 'Id user doesnt exist' });
-  console.log('visitDates', user.visitDates);
+  // console.log('visitDates', user.visitDates);
   return res.send({ bookings:  user.visitDates });
 }
 
