@@ -33,8 +33,8 @@ function Mercadopago(req, res) {
     },
     external_reference: `${idOrden}`,
     back_urls: {
-      success: `http://localhost:3000/success/${req.body.category_id}/${req.body.title}`,
-      // success: `https://my-house-app.vercel.app/success/${req.body.category_id}/${req.body.title}`,
+      // success: `http://localhost:3000/success/${req.body.category_id}/${req.body.title}`,
+      success: `https://my-house-app.vercel.app/success/${req.body.category_id}/${req.body.title}`,
     },
     // auto_return: 'approved',
     payment_methods: {
