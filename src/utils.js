@@ -44,26 +44,26 @@ function buildEqual(number) {
 function buidlWhere(block) {
   // eslint-disable-next-line no-shadow
   const query = [];
-  if (block.post_name)    query.push({ post_name: buildIlike(block.post_name) });
-  if (block.city)         query.push({ city:         buildIlike(block.city) });
+  if (block.post_name)    query.push({ post_name:    buildIlike(block.post_name)    });
+  if (block.city)         query.push({ city:         buildIlike(block.city)         });
   if (block.neighborhood) query.push({ neighborhood: buildIlike(block.neighborhood) });
-  query.push({ price: buildMinMax(block.priceMin, block.priceMax) });
-  query.push({ m2: buildMinMax(block.areaMin, block.areaMax) });
-  if (block.stratum)      query.push({ stratum:      buildEqual(block.stratum) });
-  if (block.rooms)        query.push({ rooms:        buildEqual(block.rooms) });
-  if (block.bathrooms)    query.push({ bathrooms:    buildEqual(block.bathrooms) });
-  if (block.years)        query.push({ years:        buildEqual(block.years) });
-  if (block.prop_type)    query.push({ prop_type:    buildIlike(block.prop_type) });
-  if (block.pool)         query.push({ pool:         buildEqual(block.pool) });
-  if (block.backyard)     query.push({ backyard:     buildEqual(block.backyard) });
-  if (block.gym)          query.push({ gym:          buildEqual(block.gym) });
-  if (block.bbq)          query.push({ bbq:          buildEqual(block.bbq) });
+  query.push({ price:     buildMinMax(block.priceMin, block.priceMax) });
+  query.push({ m2:        buildMinMax(block.areaMin, block.areaMax)   });
+  query.push({ rooms:     buildMinMax(block.rooms, null)              });
+  query.push({ bathrooms: buildMinMax(block.bathrooms, null)          });
+  if (block.stratum)      query.push({ stratum:      buildEqual(block.stratum)     });
+  if (block.years)        query.push({ years:        buildEqual(block.years)       });
+  if (block.prop_type)    query.push({ prop_type:    buildIlike(block.prop_type)   });
+  if (block.pool)         query.push({ pool:         buildEqual(block.pool)        });
+  if (block.backyard)     query.push({ backyard:     buildEqual(block.backyard)    });
+  if (block.gym)          query.push({ gym:          buildEqual(block.gym)         });
+  if (block.bbq)          query.push({ bbq:          buildEqual(block.bbq)         });
   if (block.parking_lot)  query.push({ parking_lot:  buildEqual(block.parking_lot) });
-  if (block.elevator)     query.push({ elevator:     buildEqual(block.elevator) });
-  if (block.security)     query.push({ security:     buildEqual(block.security) });
-  if (block.garden)       query.push({ garden:       buildEqual(block.garden) });
-  if (block.status)       query.push({ status:       buildEqual(block.status) });
-  if (block.active)       query.push({ active:       buildEqual(block.active) });
+  if (block.elevator)     query.push({ elevator:     buildEqual(block.elevator)    });
+  if (block.security)     query.push({ security:     buildEqual(block.security)    });
+  if (block.garden)       query.push({ garden:       buildEqual(block.garden)      });
+  if (block.status)       query.push({ status:       buildEqual(block.status)      });
+  if (block.active)       query.push({ active:       buildEqual(block.active)      });
   return { [Sequelize.Op.and]: query };
 }
 /**
