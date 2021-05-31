@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-unused-expressions */
 /* eslint-disable max-len */
 const { v4: uuidv4 } = require('uuid');
 const rawData = require('./rawData');
@@ -8,6 +10,31 @@ const coordinates = require('./coordinates');
 const department = ['Cundinamarca', 'Antioquia', 'Bolívar'];
 const userIdList = users.map((u) => u.id);
 const premiumRate = 0.2;
+
+function randomDate(start, end) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+const dates = [];
+let premium;
+let date;
+let status;
+// eslint-disable-next-line no-plusplus
+for (let i = 0; i < rawData.length; i++) {
+  premium = Math.random() < premiumRate;
+  date = randomDate(new Date(2021, 2, 1), new Date());
+  premium ? (date < new Date(
+    new Date().setDate(new Date().getDate() - 90),
+  ) ? status = 'Expired'
+    : status = 'Available'
+  )
+    : (date < new Date(
+      new Date().setDate(new Date().getDate() - 30),
+    ) ? status = 'Expired'
+      : status = 'Available'
+    );
+  dates.push({ premium, date, status });
+}
 
 const posts = rawData.map(
   ({
@@ -23,9 +50,9 @@ const posts = rawData.map(
     mnrogarajes,
   }, index) => ({
     id: uuidv4(),
-    userId: userIdList[Math.floor(Math.random() * userIdList.length + 1)],
+    userId: userIdList[Math.floor(Math.random() * userIdList.length)],
     post_name: title,
-    premium: Math.random() < premiumRate,
+    premium: dates[index].premium,
     prop_type: mtipoinmueble.nombre,
     // eslint-disable-next-line no-nested-ternary
     department: mciudad.id === '1' ? department[0] : (mciudad.id === '2' ? department[1] : department[2]),
@@ -49,8 +76,9 @@ const posts = rawData.map(
     parking_lot: Boolean(mnrogarajes),
     elevator: Math.random() < 0.5,
     security: Math.random() < 0.5,
-    status: 'Available',
+    status: dates[index].status,
     active: true,
+    date: dates[index].date,
   }),
 );
 

@@ -39,14 +39,15 @@ conn.sync({ force: false }).then(async () => {
     console.log('Cargando ...');
     User.bulkCreate(users);
     Post.bulkCreate(posts);
-    VisitDate.bulkCreate(visitDates);
-    Image.bulkCreate(images);
-    ServicePlans.bulkCreate(plans);
-    Order.bulkCreate(orders);
+    setTimeout(() => {
+      VisitDate.bulkCreate(visitDates);
+      Image.bulkCreate(images);
+      ServicePlans.bulkCreate(plans);
+      Order.bulkCreate(orders);
+    }, 3000);
   } else {
     console.log('La BD ya estaba cargada');
   }
-
   server.listen(PORT, () => {
     console.log(`%s listening at ${PORT}`); // eslint-disable-line no-console
   });

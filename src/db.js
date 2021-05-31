@@ -63,7 +63,7 @@ Order.belongsTo(ServicePlans);
 User.hasMany(Order);
 Order.belongsTo(User);
 
-Post.hasMany(Order);
+Post.hasOne(Order);
 Order.belongsTo(Post);
 
 module.exports = {

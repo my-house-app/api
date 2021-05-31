@@ -1,22 +1,22 @@
 const { Op } = require('sequelize');
 const {
-  Order,
+  Post,
 } = require('../db.js');
 
 async function updater(req, res) {
-  const orders = await Order.update(
-    { status: 'expired' },
+  const posts = await Post.update(
+    { status: 'Expired' },
     {
       where: {
         [Op.or]: [
           {
             [Op.and]: [
-              { status: 'active' },
-              { servicePlanId: 1 },
+              { status: 'Available' },
+              { premium: false },
               {
                 date: {
                   [Op.lte]: new Date(
-                    new Date().setDate(new Date().getDate() - 30),
+                    new Date().setDate(new Date().getDate()),
                   ),
                 },
               },
@@ -24,12 +24,12 @@ async function updater(req, res) {
           },
           {
             [Op.and]: [
-              { status: 'active' },
-              { servicePlanId: 2 },
+              { status: 'Available' },
+              { premium: true },
               {
                 date: {
                   [Op.lte]: new Date(
-                    new Date().setDate(new Date().getDate() - 90),
+                    new Date().setDate(new Date().getDate()),
                   ),
                 },
               },
@@ -40,7 +40,7 @@ async function updater(req, res) {
     },
   );
 
-  res.json(orders);
+  res.json(posts);
 }
 
 module.exports = {
