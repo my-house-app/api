@@ -10,6 +10,7 @@ const {
 } = require('../db.js');
 const { isRegEx, buildFindByArray } = require('../utils');
 const { updateBookingRepo } = require('../repositorio/booking');
+const { buildObjectPost } = require('../repositorio/post.js');
 /* cambié Post por proeperty porque Posts esta vacia hay que definir bien como es el flow
   porque creo que tenemos un problema de que mmostrar @rennyGalindez
 */
@@ -33,36 +34,7 @@ async function getPostById(req, res) {
 // http://localhost:3001/post/c56e930c-5fae-4aee-82f7-f8673e3176f8
 async function updatePost(req, res) {
   const { id } = req.params;
-
-  const upDatePost = {
-    post_name: req.body.post_name,
-    premium: req.body.premium,
-    status: req.body.status,
-    prop_type: req.body.prop_type,
-    department: req.body.department,
-    city: req.body.city,
-    street_number: req.body.street_number,
-    longitude: Number(req.body.longitude),
-    latitude: Number(req.body.latitude),
-    neighborhood: req.body.neighborhood,
-    allowAddress: req.body.allowAddress,
-    description: req.body.description,
-    stratum: Number(req.body.stratum),
-    price: Number(req.body.price),
-    m2: Number(req.body.m2),
-    rooms: Number(req.body.rooms),
-    bathrooms: Number(req.body.bathrooms),
-    years: Number(req.body.years),
-    pool: req.body.pool,
-    backyard: req.body.backyard,
-    gym: req.body.gym,
-    bbq: req.body.bbq,
-    parking_lot: req.body.parking_lot,
-    garden: req.body.garden,
-    elevator: req.body.elevator,
-    security: req.body.security,
-  };
-
+  const upDatePost = buildObjectPost(req.body);
   const post = await Post.findByPk(id, { include: { model: Image } });
 
   for (const key in post.dataValues) {
@@ -89,38 +61,9 @@ async function createPost(req, res) {
     return res.status(400).send({ message: 'Post can not create due to user id is undefined or invalid. ' });
   }
 
-  const id = req.body.id || uuidv4();
-
-  const attributesPost = {
-    id,
-    active: true,
-    post_name: req.body.post_name,
-    premium: req.body.premium,
-    status: req.body.status,
-    prop_type: req.body.prop_type,
-    department: req.body.department,
-    city: req.body.city,
-    street_number: req.body.street_number,
-    longitude: Number(req.body.longitude),
-    latitude: Number(req.body.latitude),
-    neighborhood: req.body.neighborhood,
-    allowAddress: req.body.allowAddress,
-    description: req.body.description,
-    stratum: Number(req.body.stratum),
-    price: Number(req.body.price),
-    m2: Number(req.body.m2),
-    rooms: Number(req.body.rooms),
-    bathrooms: Number(req.body.bathrooms),
-    years: Number(req.body.years),
-    pool: req.body.pool,
-    backyard: req.body.backyard,
-    gym: req.body.gym,
-    bbq: req.body.bbq,
-    parking_lot: req.body.parking_lot,
-    garden: req.body.garden,
-    elevator: req.body.elevator,
-    security: req.body.security,
-  };
+  // const id = req.body.id || uuidv4();
+  const attributesPost = buildObjectPost(req.body);
+  attributesPost.id = uuidv4();
 
   const post = await Post.create(attributesPost);
 
