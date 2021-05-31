@@ -152,10 +152,6 @@ async function sendBooking(req, res) {
     },
     host: 'smtp.ethereal.email',
     port: 587,
-    // auth: {
-    //   user: 'alec52@ethereal.email',
-    //   pass: 'jV8x7N2X83gCSC837S',
-    // },
     tls: {
       rejectUnauthorized: false,
     },
