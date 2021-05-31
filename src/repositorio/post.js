@@ -27,6 +27,7 @@ function buildObjectPost(body) {
     garden: body.garden,
     elevator: body.elevator,
     security: body.security,
+    date: body.date,
   };
   return attributesPost;
 }
