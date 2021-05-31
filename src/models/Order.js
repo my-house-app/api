@@ -9,10 +9,6 @@ module.exports = (sequelize) => {
       type: DataTypes.BIGINT,
       primaryKey: true,
     },
-    status: {
-      type: DataTypes.ENUM('expired', 'active'),
-      allowNull: false,
-    },
     paymentId: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
@@ -20,10 +16,6 @@ module.exports = (sequelize) => {
     paymentStatus: {
       type: DataTypes.STRING,
       defaultValue: '',
-    },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: false,
     },
   });
 };
