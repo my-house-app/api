@@ -25,7 +25,7 @@ const lastNames = [
 ];
 const mergedNames = [];
 // eslint-disable-next-line no-plusplus
-for (let i = 0; i <= 200; i++) {
+for (let i = 0; i <= 100; i++) {
   mergedNames.push(
     `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${
       lastNames[Math.floor(Math.random() * lastNames.length)]

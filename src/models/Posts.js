@@ -97,6 +97,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       isIn: [['Available', 'Expired', 'Not-available']],
     },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
     active: {
       type: DataTypes.BOOLEAN,
     },
