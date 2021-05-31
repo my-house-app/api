@@ -101,6 +101,7 @@ async function createOrder(req, res) {
     });
     res.json({ message: 'successfully created order', id });
   } catch (err) {
+    console.log(err)
     const plans = await Order.findAll();
     res.json(plans);
   }

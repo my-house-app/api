@@ -61,9 +61,8 @@ async function createPost(req, res) {
     return res.status(400).send({ message: 'Post can not create due to user id is undefined or invalid. ' });
   }
 
-  // const id = req.body.id || uuidv4();
   const attributesPost = buildObjectPost(req.body);
-  attributesPost.id = uuidv4();
+  attributesPost.id = req.body.id || uuidv4();
 
   const post = await Post.create(attributesPost);
 
