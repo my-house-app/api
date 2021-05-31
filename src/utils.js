@@ -111,6 +111,7 @@ function isRegEx(id) {
   );
   return regex.test(id);
 }
+
 module.exports = {
   buidlWhere,
   buildEqual,
