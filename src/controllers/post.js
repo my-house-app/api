@@ -3,9 +3,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-console */
 const { v4: uuidv4 } = require('uuid');
-const {
-  Post, User, Image,
-} = require('../db.js');
+const { Post, User, Image } = require('../db.js');
 const { isRegEx, buildFindByArray } = require('../utils');
 const { updateBookingRepo } = require('../repositorio/booking');
 const { buildObjectPost } = require('../repositorio/post.js');
@@ -13,7 +11,7 @@ const { buildObjectPost } = require('../repositorio/post.js');
 async function getPostById(req, res) {
   const { id } = req.params;
   const regex = new RegExp(
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
   );
 
   if (regex.test(id)) {
@@ -31,9 +29,14 @@ async function updatePost(req, res) {
   const upDatePost = buildObjectPost(req.body);
   const post = await Post.findByPk(id, { include: { model: Image } });
 
+  await post.images[0].update({
+    photo: req.body.images,
+  });
   for (const key in post.dataValues) {
     if (upDatePost[key]) {
-      console.log(`Se actualizo el atributo: ${key} de ${post[key]} a -> ${upDatePost[key]}`);
+      console.log(
+        `Se actualizo el atributo: ${key} de ${post[key]} a -> ${upDatePost[key]}`
+      );
       post[key] = upDatePost[key];
     }
   }
@@ -48,11 +51,14 @@ async function createPost(req, res) {
     images, // es ['https://image1','https://image2',...]
   } = req.body;
 
-  if (!isRegEx(idUser)) return res.status(400).send({ message: 'Invalid user Id. ' });
+  if (!isRegEx(idUser))
+    return res.status(400).send({ message: 'Invalid user Id. ' });
   const user = await User.findByPk(idUser, { include: { model: Post } });
 
   if (!user) {
-    return res.status(400).send({ message: 'Post can not create due to user id is undefined or invalid. ' });
+    return res.status(400).send({
+      message: 'Post can not create due to user id is undefined or invalid. ',
+    });
   }
 
   const attributesPost = buildObjectPost(req.body);
@@ -63,7 +69,9 @@ async function createPost(req, res) {
   const image = await Image.create({ id: uuidv4(), photo: images });
   post.setImages(image);
 
-  const arrayPost = await findPostsByIds(user.posts.map((publicacion) => publicacion.id));
+  const arrayPost = await findPostsByIds(
+    user.posts.map((publicacion) => publicacion.id)
+  );
   arrayPost.push(post);
   user.setPosts(arrayPost);
 
@@ -72,7 +80,9 @@ async function createPost(req, res) {
 
 async function deletePost(req, res) {
   const { id } = req.params;
-  const post = await Post.findByPk(id, { include: { all: true, nested: true } });
+  const post = await Post.findByPk(id, {
+    include: { all: true, nested: true },
+  });
 
   post.status = 'Not-available';
   post.active = false;
@@ -86,7 +96,7 @@ async function deletePost(req, res) {
   };
   // Cambiar el estado de todas sus reservas a 'Cancelled'
   idBookings.forEach(async (idBooking) => {
-    await updateBookingRepo(idBooking, upDateBooking);// retorna un booking
+    await updateBookingRepo(idBooking, upDateBooking); // retorna un booking
   });
 
   return res.send({ message: 'Deleted post. ', post });
