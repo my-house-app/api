@@ -24,8 +24,8 @@ async function getUsers(req, res) {
     zip_code:      req.query.zip_code      || null,
     type:          req.query.type          || null,
     status:        req.query.status        || null,
-  }; // futuros filtros
-  console.log('offset: ', offset);
+  };
+
   const queryUser = {
     limit,
     offset,
@@ -45,7 +45,12 @@ async function getUsers(req, res) {
   return res.send({ count, users: rows, currentPage: getCurrentPage(offset, limit) });
 }
 
-// Traen todos los bookings, para que lo vea un usuario admin o superAdmin
+/**
+ * Traen todos los bookings, para que lo vea un usuario admin o superAdmin
+ * @param {*} req es request
+ * @param {*} res es response
+ * @returns retorna un objeto con bookings, count y currentPage
+ */
 async function getBookings(req, res) {
   const limit =  Number(req.query.limit)  || 10;
   const page = Number(req.query.page)     || 1;// falta una validacion

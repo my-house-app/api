@@ -3,40 +3,24 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable no-console */
 /* eslint-disable key-spacing */
 /* eslint-disable no-multi-spaces */
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const { User, Post, VisitDate } = require('../db.js');
-const { isRegEx, buildIlike } = require('../utils.js');
+const { isRegEx } = require('../utils.js');
 // ABM
 
 // Example
 // http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62b189281a0d
 async function getUserById(req, res) {
   const { id } = req.params;
-  // const externalId = id;
 
-  // let { rows: user } = await User.findAndCountAll(
-  //   {
-  //     where: {
-  //       externalId: buildIlike(externalId),
-  //      }, // agregar where: { active: buildEqual(1) },
-  //     include: { all: true, nested: true },
-  //   },
-  // );
-  // if (user.length) {
-  //   return res.send({ user: user[0] });
-  // }
-
-  // Es el unico que está trabajando, preguntar si alguna vez puede llegar un externalId
   if (!isRegEx(id)) {
     return res.send({ message: 'El Id pasado no es válido' });
   }
 
   const user = await User.findByPk(id, {
-    // include: { all: true, nested: true },
     include: [
       {
         model: Post,
@@ -49,7 +33,6 @@ async function getUserById(req, res) {
       // },
     ],
   });
-  // console.log('User: ', user.posts.filter((post) => post.active === true));
 
   return res.send({ user });
 }
@@ -80,7 +63,7 @@ async function addUser(req, res) {
 async function deleteUser(req, res) {
   const { id } = req.params;
   const user = await User.findByPk(id);
-  // 'Available', 'Expired', 'Not-available'
+  // 'Available', 'Expired', 'Not-available', 'Sold'
   user.status = 'Not-available';
   await user.save();
 
@@ -106,7 +89,6 @@ async function updateUser(req, res) {
 
   for (const key in user.dataValues) {
     if (upDateUser[key]) {
-      // console.log(`Se actualizo el atributo: ${key} de ${user[key]} a -> ${upDateUser[key]}`);
       user[key] = upDateUser[key];
     }
   }
