@@ -18,6 +18,7 @@ async function getPostById(req, res) {
     const post = await Post.findByPk(id, {
       include: { all: true, nested: true },
     });
+
     res.json(post);
   } else {
     res.send({ message: 'El Id pasado no es válido' });
@@ -28,10 +29,14 @@ async function updatePost(req, res) {
   const { id } = req.params;
   const upDatePost = buildObjectPost(req.body);
   const post = await Post.findByPk(id, { include: { model: Image } });
+  const { images } = req.body;
+  const [imagesContainer] = images;
+  if (typeof imagesContainer[0] === 'string') {
+    await post.images[0].update({
+      photo: req.body.images,
+    });
+  }
 
-  await post.images[0].update({
-    photo: req.body.images,
-  });
   for (const key in post.dataValues) {
     if (upDatePost[key]) {
       console.log(
