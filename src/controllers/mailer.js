@@ -4,6 +4,7 @@
 const appEmail = process.env.EMAIL;
 const appPass = process.env.PASSWORD;
 const nodemailer = require('nodemailer');
+const inlineBase64 = require('nodemailer-plugin-inline-base64');
 const { VisitDate } = require('../db');
 const { buidlBookingObject } = require('../repositorio/booking');
 
@@ -44,11 +45,11 @@ const paymentConfirmation = async (req, res) => {
         <tbody>
           <tr>
             <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-              
+
         <h2 class="v-text-align v-font-size" style="margin: 0px; color: #323b42; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: 'Lato',sans-serif; font-size: 20px;">
           <strong>Your payment was successful! You will have ${plan} benefits until ${date}</strong>
         </h2>
-      
+
             </td>
           </tr>
         </tbody>
@@ -60,43 +61,43 @@ const paymentConfirmation = async (req, res) => {
   <div style="max-width: 320px;min-width: 300px;display: table-cell;vertical-align: top;">
     <div style="width: 100% !important;">
     <div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">
-        
+
   <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
     <tbody>
       <tr>
         <td style="overflow-wrap:break-word;word-break:break-word;padding:13px;font-family:arial,helvetica,sans-serif;" align="left">
-          
+
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr>
       <td style="padding-right: 0px;padding-left: 0px;" align="center">
-        
+
         <img align="center" border="0" src="${image}" alt="Photo" title="Photo" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 274px;" width="274" />
-        
+
       </td>
     </tr>
   </table>
-  
+
         </td>
       </tr>
     </tbody>
   </table>
-  
+
     </div>
     </div>
   </div>
   <div style="max-width: 320px;min-width: 300px;display: table-cell;vertical-align: top;">
     <div style="width: 100% !important;">
    <div style="padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">
-    
+
    <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
    <tbody>
      <tr>
        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
-         
+
    <div style="color: #323b42; line-height: 140%; text-align: left; word-wrap: break-word;">
      <p style="font-size: 14px; line-height: 140%;">${name}</p>
    </div>
- 
+
        </td>
      </tr>
    </tbody>
@@ -106,21 +107,21 @@ const paymentConfirmation = async (req, res) => {
     <tbody>
       <tr>
         <td style="overflow-wrap:break-word;word-break:break-word;padding:18px 10px 4px;font-family:arial,helvetica,sans-serif;" align="left">
-          
+
     <h3 style="margin: 0px; color: #323b42; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 18px;">
       <strong>$${price}</strong>
     </h3>
-  
+
         </td>
       </tr>
     </tbody>
   </table>
-  
+
   <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
     <tbody>
       <tr>
         <td style="overflow-wrap:break-word;word-break:break-word;padding:1px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
-          
+
     <h3 style="margin: 0px; color: #323b42; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 16px;">
       ${title}
     </h3>
@@ -128,11 +129,10 @@ const paymentConfirmation = async (req, res) => {
       </tr>
     </tbody>
   </table>
-  
 
             `,
   };
-
+  transporter.use('compile', inlineBase64({ cidPrefix: 'somePrefix_' }));
   const outbox = await transporter.sendMail(mailOptions);
   res.send(outbox);
 };
@@ -152,10 +152,6 @@ async function sendBooking(req, res) {
     },
     host: 'smtp.ethereal.email',
     port: 587,
-    // auth: {
-    //   user: 'alec52@ethereal.email',
-    //   pass: 'jV8x7N2X83gCSC837S',
-    // },
     tls: {
       rejectUnauthorized: false,
     },

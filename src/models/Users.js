@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
         unique: {
           args: true,
           msg: 'Oops. Looks like you already have an account with this email address. Please try to login.',
-          fields: [sequelize.fn('lower', sequelize.col('email'))]
+          fields: [sequelize.fn('lower', sequelize.col('email'))],
         },
       },
       password: {
@@ -33,7 +33,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
       },
       photo: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         isUrl: true,
       },
       city: {

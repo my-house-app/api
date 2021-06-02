@@ -2,105 +2,16 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable key-spacing */
 /* eslint-disable camelcase */
-const { v4: uuidv4 } = require('uuid');
-const axios = require('axios');
 const { isRegEx } = require('../utils.js');
 const { Post, Image, User } = require('../db.js');
-const {
-  buidlWhere, getCurrentPage,
-} = require('../utils');
+const { buidlWhere, getCurrentPage } = require('../utils');
 
-function addPost(req, res) {
-  // Create a new id
-  const id = uuidv4();
-  // Get all the required info by params
-  const {
-    post_name,
-    premium,
-    prop_type,
-    department,
-    city,
-    street_number,
-    description,
-    stratum,
-    neighborhood,
-    price,
-    m2,
-    rooms,
-    bathrooms,
-    years,
-    pool,
-    backyard,
-    gym,
-    bbq,
-    parking_lot,
-    garden,
-    elevator,
-    security,
-  } = req.body;
-  // Get the coordinates with the address
-  const apiKey = 'RwOMALg8LILEQgTjBivW7TigzNNsyrG5mfGvpr6yZbw';
-  const street = street_number.replace(/\s/g, '+').replace(/#/g, '%23');
-  const address = 'Colombia+'.concat(department, '+', city, '+', street);
-  const url = encodeURI(address.concat(`&apiKey=${apiKey}`));
-  // console.log('url: ', url);
-
-  axios.get(`https://geocode.search.hereapi.com/v1/geocode?q=${url}`)
-    .then((r) => {
-      /* console.log('Longitude: ', r.data.items[0].position.lng);
-      console.log('Latitude: ', r.data.items[0].position.lat); */
-      const coordinates = {
-        longitude: parseFloat(r.data.items[0].position.lng),
-        latitude: parseFloat(r.data.items[0].position.lat),
-      };
-      const newPost = {
-        id,
-        post_name,
-        premium,
-        prop_type,
-        department,
-        city,
-        street_number,
-        longitude: coordinates.longitude,
-        latitude: coordinates.latitude,
-        description,
-        stratum,
-        neighborhood,
-        price,
-        m2,
-        rooms,
-        bathrooms,
-        years,
-        pool,
-        backyard,
-        gym,
-        bbq,
-        parking_lot,
-        garden,
-        elevator,
-        security,
-      };
-      console.log('newPost: ', newPost);
-      return newPost;
-    })
-    .then((post) => {
-      console.log('Post to create: ', post);
-      Post.create(post);
-    })
-    .catch((e) => console.error("Couldn't fetch data", e));
-
-  // Falta agregar la relación con el user
-  res.send({ message: 'Post successfully created!' });
-}
-
-// Ejemplos de un pedido
-// http://localhost:3001/posts?city=med&neighborhood=pol&priceMin=0&priceMax=100000000
 async function getPosts(req, res) {
-  const limit =  Number(req.query.limit)  || 10;
-  const page = Number(req.query.page)     || 1;
+  const limit =  Number(req.query.limit)   || 10;
+  const page = Number(req.query.page)      || 1;
   const offset = (page * limit) - limit;
-  const atributo = req.query.atributo   || null;
-  const orden =    req.query.orden      || null;
+  const atributo = req.query.atributo      || null;
+  const orden =    req.query.orden         || null;
   const block = {
     post_name:    req.query.post_name      || '',
     city:         req.query.city           || '',
@@ -114,18 +25,18 @@ async function getPosts(req, res) {
     rooms:     Number(req.query.rooms)     || null,
     bathrooms: Number(req.query.bathrooms) || null,
     years:     Number(req.query.years)     || null,
-    pool:        req.query.pool        || null,
-    backyard:    req.query.backyard    || null,
-    gym:         req.query.gym         || null,
-    bbq:         req.query.bbq         || null,
-    parking_lot: req.query.parking_lot || null,
-    elevator:    req.query.elevator    || null,
-    security:    req.query.security    || null,
-    garden:      req.query.garden      || null,
+    pool:        req.query.pool            || null,
+    backyard:    req.query.backyard        || null,
+    gym:         req.query.gym             || null,
+    bbq:         req.query.bbq             || null,
+    parking_lot: req.query.parking_lot     || null,
+    elevator:    req.query.elevator        || null,
+    security:    req.query.security        || null,
+    garden:      req.query.garden          || null,
     // para el admin: id es de quien inicio sesion
-    id:          req.query.id          || null,
-    active:      req.query.active      || null,
-    status:      req.query.status      || null,
+    id:          req.query.id              || null,
+    active:      req.query.active          || null,
+    status:      req.query.status          || null,
   };
 
   if (block.id && isRegEx(block.id)) {
@@ -145,7 +56,7 @@ async function getPosts(req, res) {
     block.status = 'Available';
     block.active = true;
   }
-
+  console.log('Block post', block)
   const queryPost = {
     limit,
     offset,
@@ -170,7 +81,7 @@ async function getPosts(req, res) {
   }];
 
   const { count, rows } = await Post.findAndCountAll(queryPost);
-  const lastPage = Math.ceil(count / limit);
+  const lastPage = Math.ceil(count / limit) || 1;
   if (page > lastPage) return res.status(404).send({ message: 'Invalid Request', lastPage });
 
   return res.status(200).json(
@@ -188,7 +99,6 @@ async function cargarBD() {
 }
 
 module.exports = {
-  addPost,
   getPosts,
   cargarBD,
 };

@@ -1,18 +1,13 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-return-await */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-plusplus */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable camelcase */
+/* eslint-disable no-console */
 const { v4: uuidv4 } = require('uuid');
 const { Post, User, Image } = require('../db.js');
 const { isRegEx, buildFindByArray } = require('../utils');
 const { updateBookingRepo } = require('../repositorio/booking');
 const { buildObjectPost } = require('../repositorio/post.js');
-/* cambié Post por proeperty porque Posts esta vacia hay que definir bien como es el flow
-  porque creo que tenemos un problema de que mmostrar @rennyGalindez
-*/
-// http://localhost:3001/post/c56e930c-5fae-4aee-82f7-F8673E3176F8
+
 async function getPostById(req, res) {
   const { id } = req.params;
   const regex = new RegExp(
@@ -23,21 +18,25 @@ async function getPostById(req, res) {
     const post = await Post.findByPk(id, {
       include: { all: true, nested: true },
     });
+
     res.json(post);
   } else {
     res.send({ message: 'El Id pasado no es válido' });
   }
 }
 
-// http://localhost:3001/post/c56e930c-5fae-4aee-82f7-f8673e3176f8
 async function updatePost(req, res) {
   const { id } = req.params;
   const upDatePost = buildObjectPost(req.body);
   const post = await Post.findByPk(id, { include: { model: Image } });
+  const { images } = req.body;
+  const [imagesContainer] = images;
+  if (typeof imagesContainer[0] === 'string') {
+    await post.images[0].update({
+      photo: req.body.images,
+    });
+  }
 
-  await post.images[0].update({
-    photo: req.body.images,
-  });
   for (const key in post.dataValues) {
     if (upDatePost[key]) {
       console.log(
@@ -84,7 +83,6 @@ async function createPost(req, res) {
   return res.send({ message: 'Created post. ', post });
 }
 
-// http://localhost:3001/post/c56e930c-5fae-4aee-82f7-f8673e3176f8
 async function deletePost(req, res) {
   const { id } = req.params;
   const post = await Post.findByPk(id, {
