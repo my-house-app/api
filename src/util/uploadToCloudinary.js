@@ -1,8 +1,10 @@
 const cloudinary = require('cloudinary').v2;
+const { CLOUD_NAME, API_KEY, API_SECRET } = process.env;
+
 cloudinary.config({
-  cloud_name: 'my-house-app',
-  api_key: '987194612959531',
-  api_secret: 'k_4yNIv2IOW8f1V1kYCot70RO90',
+  cloud_name: CLOUD_NAME,
+  api_key: API_KEY,
+  api_secret: API_SECRET,
 });
 
 async function cloudinaryUploader(images = []) {
@@ -10,7 +12,6 @@ async function cloudinaryUploader(images = []) {
   return Promise.all(
     images.map(async (image) => {
       const resp = await cloudinary.uploader.upload(image);
-
       return resp.secure_url;
     })
   );
