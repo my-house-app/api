@@ -8,6 +8,7 @@ const booking = require('./visitDate.js');
 const bookings = require('./visitDates.js');
 const mailer = require('./mailer');
 const updater = require('./updater');
+const views = require('./views');
 
 const router = Router();
 
@@ -20,4 +21,5 @@ router.use('/booking', booking);
 router.use('/bookings', bookings);
 router.use('/mercadopago', postMercadopago);
 router.use('/mailer', mailer);
+router.use('/views', views);
 module.exports = router;

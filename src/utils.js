@@ -112,6 +112,11 @@ function isRegEx(id) {
   return regex.test(id);
 }
 
+// Retorna un entero aleatorio entre min (incluido) y max (excluido)
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 module.exports = {
   buidlWhere,
   buildEqual,
@@ -121,4 +126,5 @@ module.exports = {
   buidlWhereUser,
   isRegEx,
   buildFindByArray,
+  getRandomInt,
 };

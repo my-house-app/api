@@ -8,10 +8,11 @@ const { isRegEx, buildFindByArray } = require('../utils');
 const { updateBookingRepo } = require('../repositorio/booking');
 const { buildObjectPost } = require('../repositorio/post.js');
 const cloudinaryUploader = require('../util/uploadToCloudinary');
+
 async function getPostById(req, res) {
   const { id } = req.params;
   const regex = new RegExp(
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
   );
 
   if (regex.test(id)) {
@@ -40,7 +41,7 @@ async function updatePost(req, res) {
   for (const key in post.dataValues) {
     if (upDatePost[key]) {
       console.log(
-        `Se actualizo el atributo: ${key} de ${post[key]} a -> ${upDatePost[key]}`
+        `Se actualizo el atributo: ${key} de ${post[key]} a -> ${upDatePost[key]}`,
       );
       post[key] = upDatePost[key];
     }
@@ -56,8 +57,9 @@ async function createPost(req, res) {
     images, // es ['https://image1','https://image2',...]
   } = req.body;
 
-  if (!isRegEx(idUser))
+  if (!isRegEx(idUser)) {
     return res.status(400).send({ message: 'Invalid user Id. ' });
+  }
   const user = await User.findByPk(idUser, { include: { model: Post } });
 
   if (!user) {
@@ -76,7 +78,7 @@ async function createPost(req, res) {
   const image = await Image.create({ id: uuidv4(), photo: cloudResponse });
   post.setImages(image);
   const arrayPost = await findPostsByIds(
-    user.posts.map((publicacion) => publicacion.id)
+    user.posts.map((publicacion) => publicacion.id),
   );
   arrayPost.push(post);
   user.setPosts(arrayPost);
@@ -120,10 +122,19 @@ async function findPostsByIds(idPosts) {
     },
   });
 }
+async function updateView(req, res) {
+  const { id } = req.params;
+  const post = await Post.findByPk(id, { attributes: ['id', 'views'] });
+  if (!post) { return res.status(404).send({ message: 'No se encontro la publicacion'});};
+  post.views += 1;
+  post.save();
+  return res.send({ message: 'View updated. ', view: post.views });
+}
 
 module.exports = {
   getPostById,
   updatePost,
   deletePost,
   createPost,
+  updateView,
 };

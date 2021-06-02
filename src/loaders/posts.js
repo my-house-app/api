@@ -6,6 +6,7 @@ const rawData = require('./rawData');
 const users = require('./users');
 const addresses = require('./addresses');
 const coordinates = require('./coordinates');
+const { getRandomInt } = require('../utils');
 
 const department = ['Cundinamarca', 'Antioquia', 'Bolívar'];
 const userIdList = users.map((u) => u.id);
@@ -79,6 +80,7 @@ const posts = rawData.map(
     status: dates[index].status,
     active: true,
     date: dates[index].date,
+    views: getRandomInt(0, 50),
   }),
 );
 
