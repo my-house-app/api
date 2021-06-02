@@ -107,5 +107,8 @@ module.exports = (sequelize) => {
     allowAddress: {
       type: DataTypes.BOOLEAN,
     },
+    views: {
+      type: DataTypes.INTEGER,
+    },
   });
 };
