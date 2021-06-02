@@ -1,7 +1,6 @@
 const errorHandler = function (err, req, res, next) {
-  console.log("err.message: ", err.stack);
+  console.log('err.message: ', err);
   res.status(500).send('algo salio mal en el server..');
-
 };
 
 // server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
@@ -11,4 +10,4 @@ const errorHandler = function (err, req, res, next) {
 //   res.status(status).send(message);
 // });
 
-module.exports = errorHandler
+module.exports = errorHandler;

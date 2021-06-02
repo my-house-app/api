@@ -7,7 +7,7 @@ const { Post, User, Image } = require('../db.js');
 const { isRegEx, buildFindByArray } = require('../utils');
 const { updateBookingRepo } = require('../repositorio/booking');
 const { buildObjectPost } = require('../repositorio/post.js');
-
+const cloudinaryUploader = require('../util/uploadToCloudinary');
 async function getPostById(req, res) {
   const { id } = req.params;
   const regex = new RegExp(
@@ -71,9 +71,10 @@ async function createPost(req, res) {
 
   const post = await Post.create(attributesPost);
 
-  const image = await Image.create({ id: uuidv4(), photo: images });
+  // aqui va la funcion que carga en cloudinary
+  const cloudResponse = await cloudinaryUploader(images);
+  const image = await Image.create({ id: uuidv4(), photo: cloudResponse });
   post.setImages(image);
-
   const arrayPost = await findPostsByIds(
     user.posts.map((publicacion) => publicacion.id)
   );
