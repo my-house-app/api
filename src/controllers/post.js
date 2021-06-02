@@ -125,7 +125,7 @@ async function findPostsByIds(idPosts) {
 async function updateView(req, res) {
   const { id } = req.params;
   const post = await Post.findByPk(id, { attributes: ['id', 'views'] });
-  if (!post) { return res.status(404).send({ message: 'No se encontro la publicacion'});};
+  if (!post) { return res.status(404).send({ message: 'No se encontro la publicacion'});
   post.views += 1;
   post.save();
   return res.send({ message: 'View updated. ', view: post.views });
