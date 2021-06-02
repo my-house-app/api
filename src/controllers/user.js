@@ -9,10 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const { User, Post, VisitDate } = require('../db.js');
 const { isRegEx } = require('../utils.js');
-// ABM
 
-// Example
-// http://localhost:3001/user/011f5c9c-b6a3-4c68-9288-62b189281a0d
 async function getUserById(req, res) {
   const { id } = req.params;
 
@@ -24,6 +21,7 @@ async function getUserById(req, res) {
     include: [
       {
         model: Post,
+        include: [{ model:VisitDate }],
       },
       {
         model: VisitDate,
