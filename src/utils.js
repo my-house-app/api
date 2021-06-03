@@ -5,8 +5,8 @@ const { Op, Sequelize } = require('sequelize');
 
 /**
  * Busca la coincidencias dentro de un rango ve valores
- * @param {* min es de tipo integer y es el minimo valor de busqueda} min
- * @param {* max es de tipo integer y es el maximo valor de busqueda} max
+ * @param {*} min es de tipo integer y es el minimo valor de busqueda
+ * @param {*} max es de tipo integer y es el maximo valor de busqueda
  * @returns Un objeto de busqueda: [Op.gte]: (>=) o [Op.lte]: (<=)
  */
 function buildMinMax(min, max) {
@@ -20,7 +20,7 @@ function buildMinMax(min, max) {
 
 /**
    * Busca una las coincidencias (case insensitive) de una palabra (word) en un string
-   * @param {* word es de tipo string} word
+   * @param {*} word es de tipo string
    * @returns Un objeto de busqueda: [Op.iLike]:
    */
 function buildIlike(word) {
@@ -29,7 +29,7 @@ function buildIlike(word) {
 
 /**
    * Busca el valor exacto
-   * @param {* number es de tipo integer } number
+   * @param {*} number  es de tipo integer
    * @returns Un objeto de busqueda: [Op.eq]:
    */
 function buildEqual(number) {
@@ -38,7 +38,7 @@ function buildEqual(number) {
 
 /**
    * Construye una sentencia where en conjunto con varios and
-   * @param {* block es un objeto con los atributos que se van a usar para los filtros } block
+   * @param {*} block block es un objeto con los atributos que se van a usar para los filtros
    * @returns Las condiciones de busqueda: where atributo1 and atributo2 and ...
    */
 function buidlWhere(block) {
@@ -68,7 +68,7 @@ function buidlWhere(block) {
 }
 /**
    * Construye una sentencia where en conjunto con varios and
-   * @param {* block es un objeto con los atributos que se van a usar para los filtros } block
+   * @param {*} block block es un objeto con los atributos que se van a usar para los filtros
    * @returns Las condiciones de busqueda: where atributo1 and atributo2 and ...
    */
 function buidlWhereUser(block) {
@@ -88,7 +88,7 @@ function buidlWhereUser(block) {
 
 /**
  * Busca todos los valores del array
- * @param {* array tiene todos los elementos que son buscados} array
+ * @param {*} array tiene todos los elementos que son buscados
  * @returns Un objeto de busqueda: [Sequelize.Op.in]:
  */
 function buildFindByArray(array) {
@@ -97,8 +97,8 @@ function buildFindByArray(array) {
 // FUNCIONES AUXILIARES PARA EL PAGINADO
 /**
  * Obtiene el numero de la pagina actual con respecto al offset y al limit
- * @param {* offset es de tipo integer y es desde donde empiezo a traer los datos} offset
- * @param {* limit es de tipo integer y es la cantidad de registros que devuelvo} limit
+ * @param {*} offset es de tipo integer y es desde donde empiezo a traer los datos
+ * @param {*} limit es de tipo integer y es la cantidad de registros que devuelvo
  * @returns Un integer
  */
 function getCurrentPage(offset, limit) {

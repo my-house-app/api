@@ -1,3 +1,4 @@
+/* eslint-disable no-multi-spaces */
 function buildObjectPost(body) {
   const attributesPost = {
     active: body.active || true,
@@ -19,14 +20,14 @@ function buildObjectPost(body) {
     rooms: Number(body.rooms),
     bathrooms: Number(body.bathrooms),
     years: Number(body.years),
-    pool: body.pool || false,
-    backyard: body.backyard || false,
-    gym: body.gym || false,
-    bbq: body.bbq || false,
+    pool: body.pool               || false,
+    backyard: body.backyard       || false,
+    gym: body.gym                 || false,
+    bbq: body.bbq                 || false,
     parking_lot: body.parking_lot || false,
-    garden: body.garden || false,
-    elevator: body.elevator || false,
-    security: body.security || false,
+    garden: body.garden           || false,
+    elevator: body.elevator       || false,
+    security: body.security       || false,
     date: body.date,
   };
   return attributesPost;
