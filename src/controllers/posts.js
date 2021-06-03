@@ -13,9 +13,12 @@ async function getPosts(req, res) {
   const atributo = req.query.atributo           || null;
   const orden =    req.query.orden              || null;
   const block = {
-    post_name:        changeDiacriticos(req.query.post_name)       || '',
-    city:             changeDiacriticos(req.query.city)            || '',
-    neighborhood:     changeDiacriticos(req.query.neighborhood)    || '',
+    post_name:        req.query.post_name      || '',
+    city:             req.query.city           || '',
+    neighborhood:     req.query.neighborhood   || '',
+    // post_name:        changeDiacriticos(req.query.post_name)       || '',
+    // city:             changeDiacriticos(req.query.city)            || '',
+    // neighborhood:     changeDiacriticos(req.query.neighborhood)    || '',
     prop_type:        req.query.prop_type       || '',
     priceMin:  Number(req.query.priceMin)       || 0,
     priceMax:  Number(req.query.priceMax)       || null,

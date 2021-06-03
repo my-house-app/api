@@ -117,14 +117,14 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-/**
- *
- * @param {*} texto es un string
- * @returns retorna un string sin tildes
- */
-function changeDiacriticos(texto) {
-  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
+// /**
+//  *
+//  * @param {*} texto es un string
+//  * @returns retorna un string sin tildes
+//  */
+// function changeDiacriticos(texto) {
+//   return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+// }
 
 module.exports = {
   buidlWhere,
@@ -136,5 +136,4 @@ module.exports = {
   isRegEx,
   buildFindByArray,
   getRandomInt,
-  changeDiacriticos,
 };
