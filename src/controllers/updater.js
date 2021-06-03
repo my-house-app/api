@@ -16,7 +16,7 @@ async function updater(req, res) {
               {
                 date: {
                   [Op.lte]: new Date(
-                    new Date().setDate(new Date().getDate()),
+                    new Date().setDate(new Date().getDate() - 30),
                   ),
                 },
               },
@@ -29,7 +29,7 @@ async function updater(req, res) {
               {
                 date: {
                   [Op.lte]: new Date(
-                    new Date().setDate(new Date().getDate()),
+                    new Date().setDate(new Date().getDate() - 90),
                   ),
                 },
               },
