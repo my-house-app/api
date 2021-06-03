@@ -16,9 +16,17 @@ async function getPostById(req, res) {
   );
 
   if (regex.test(id)) {
-    const post = await Post.findByPk(id, {
-      include: { all: true, nested: true },
-    });
+    const post = await Post.findOne(
+      {
+        where: {
+          id,
+          status: 'Available',
+        },
+      },
+      {
+        include: { all: true, nested: true },
+      },
+    );
 
     res.json(post);
   } else {
