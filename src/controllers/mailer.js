@@ -25,9 +25,9 @@ const paymentConfirmation = async (req, res) => {
   });
 
   const mailOptions = {
-    from: '"My House App" <myhouseapp86@gmail.com>',
+    from: '"My House App" <info.myhouseapp.col@gmail.com>',
     to: email,
-    subject: 'Payment Confirmation',
+    subject: 'Su publicación fue creada correctamente',
     html: `
     <div>
     <br></br>
@@ -47,7 +47,7 @@ const paymentConfirmation = async (req, res) => {
             <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
 
         <h2 class="v-text-align v-font-size" style="margin: 0px; color: #323b42; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: 'Lato',sans-serif; font-size: 20px;">
-          <strong>Your payment was successful! You will have ${plan} benefits until ${date}</strong>
+          <strong>Su pago fue exitoso! Tendrá beneficios ${plan} hasta el ${date}</strong>
         </h2>
 
             </td>
@@ -147,8 +147,8 @@ async function sendBooking(req, res) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: appEmail || 'myhouseapp86@gmail.com',
-      pass: appPass || 'Houseapp.123',
+      user: appEmail,
+      pass: appPass,
     },
     host: 'smtp.ethereal.email',
     port: 587,
@@ -166,7 +166,7 @@ async function sendBooking(req, res) {
     msjSubject = 'Reserva cancelada';
   }
   const mailOptions = {
-    from: '"My House App" <myhouseapp86@gmail.com>',
+    from: '"My House App" <info.myhouseapp.col@gmail.com>',
     to: maillist,
     subject: msjSubject, // 'Reserva de la publicación',
     html: `
@@ -239,7 +239,7 @@ async function sendBooking(req, res) {
           </div>
         </div>
         <br/>
-        <p><a>https://my-house-app.vercel.app</a></p>
+        <p><a>https://my-house-app-one.vercel.app</a></p>
         <sub>No tiene validez</sub>
       </div>
     `,
