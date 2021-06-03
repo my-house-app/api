@@ -217,7 +217,7 @@ async function sendBooking(req, res) {
           </div>
           <div>
             <label>Telefono</label>&nbsp;&nbsp;
-            <label>${bookingSended.owner.phone}</label>
+            <label>${bookingSended.owner.phone || '-'}</label>
           </div>
           <div>
             <label>Email</label>&nbsp;&nbsp;
@@ -231,7 +231,7 @@ async function sendBooking(req, res) {
           </div>
           <div>
             <label>Telefono</label>&nbsp;&nbsp;
-            <label>${bookingSended.interested.phone}</label>
+            <label>${bookingSended.interested.phone || '-'}</label>
           </div>
           <div>
             <label>Email</label>&nbsp;&nbsp;

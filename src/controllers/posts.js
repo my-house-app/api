@@ -2,7 +2,7 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable key-spacing */
 /* eslint-disable camelcase */
-const { isRegEx } = require('../utils.js');
+const { isRegEx, changeDiacriticos } = require('../utils.js');
 const { Post, Image, User } = require('../db.js');
 const { buidlWhere, getCurrentPage } = require('../utils');
 
@@ -13,9 +13,9 @@ async function getPosts(req, res) {
   const atributo = req.query.atributo           || null;
   const orden =    req.query.orden              || null;
   const block = {
-    post_name:        req.query.post_name       || '',
-    city:             req.query.city            || '',
-    neighborhood:     req.query.neighborhood    || '',
+    post_name:        changeDiacriticos(req.query.post_name)       || '',
+    city:             changeDiacriticos(req.query.city)            || '',
+    neighborhood:     changeDiacriticos(req.query.neighborhood)    || '',
     prop_type:        req.query.prop_type       || '',
     priceMin:  Number(req.query.priceMin)       || 0,
     priceMax:  Number(req.query.priceMax)       || null,
