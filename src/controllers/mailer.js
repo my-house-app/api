@@ -19,8 +19,8 @@ const paymentConfirmation = async (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: appEmail || 'myhouseapp86@gmail.com',
-      pass: appPass || 'Houseapp.123',
+      user: appEmail,
+      pass: appPass,
     },
   });
 
