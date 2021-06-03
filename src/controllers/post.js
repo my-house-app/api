@@ -72,7 +72,7 @@ async function createPost(req, res) {
 
   const attributesPost = buildObjectPost(req.body);
   attributesPost.id = req.body.id || uuidv4();
-
+  attributesPost.views = 0;
   const post = await Post.create(attributesPost);
 
   // aqui va la funcion que carga en cloudinary
@@ -124,6 +124,7 @@ async function findPostsByIds(idPosts) {
     },
   });
 }
+
 async function updateView(req, res) {
   const { id } = req.params;
   const post = await Post.findByPk(id, { attributes: ['id', 'views'] });
