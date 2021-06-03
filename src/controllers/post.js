@@ -12,7 +12,7 @@ const cloudinaryUploader = require('../util/uploadToCloudinary');
 async function getPostById(req, res) {
   const { id } = req.params;
   const regex = new RegExp(
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
   );
 
   if (regex.test(id)) {
@@ -32,16 +32,18 @@ async function updatePost(req, res) {
   const post = await Post.findByPk(id, { include: { model: Image } });
   const { images } = req.body;
   const [imagesContainer] = images;
+
   if (typeof imagesContainer[0] === 'string') {
+    const cloudResponse = await cloudinaryUploader(images);
     await post.images[0].update({
-      photo: req.body.images,
+      photo: cloudResponse,
     });
   }
 
   for (const key in post.dataValues) {
     if (upDatePost[key]) {
       console.log(
-        `Se actualizo el atributo: ${key} de ${post[key]} a -> ${upDatePost[key]}`,
+        `Se actualizo el atributo: ${key} de ${post[key]} a -> ${upDatePost[key]}`
       );
       post[key] = upDatePost[key];
     }
@@ -78,7 +80,7 @@ async function createPost(req, res) {
   const image = await Image.create({ id: uuidv4(), photo: cloudResponse });
   post.setImages(image);
   const arrayPost = await findPostsByIds(
-    user.posts.map((publicacion) => publicacion.id),
+    user.posts.map((publicacion) => publicacion.id)
   );
   arrayPost.push(post);
   user.setPosts(arrayPost);
