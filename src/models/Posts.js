@@ -41,7 +41,7 @@ module.exports = (sequelize) => {
       type: DataTypes.FLOAT,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     stratum: {
       type: DataTypes.INTEGER,
