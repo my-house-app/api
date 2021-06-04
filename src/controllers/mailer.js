@@ -181,7 +181,7 @@ async function sendBooking(req, res) {
                 display: block;
                 overflow: hidden;">
         <div style="display: flex;flex-direction: row;justify-content: left;">
-          <img style= "width: 10rem; height: 10rem;" src="${image}" alt='logo' />
+          <img style= "width: 15rem; height: 10rem;" src="${image}" alt='logo' />
           <div style="font-size: 24px;">
             <h1>Booking</h1>
             <h3>my house app s.r.l</h3>
