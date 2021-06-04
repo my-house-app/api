@@ -43,27 +43,29 @@ function buildEqual(number) {
    */
 function buidlWhere(block) {
   // eslint-disable-next-line no-shadow
+  console.log('block: ', block);
+
   const query = [];
-  if (block.post_name) query.push({ post_name: buildIlike(block.post_name) });
-  if (block.city) query.push({ city: buildIlike(block.city) });
+  if (block.post_name)    query.push({ post_name: buildIlike(block.post_name) });
+  if (block.city)         query.push({ city: buildIlike(block.city) });
   if (block.neighborhood) query.push({ neighborhood: buildIlike(block.neighborhood) });
   query.push({ price: buildMinMax(block.priceMin, block.priceMax) });
   query.push({ m2: buildMinMax(block.areaMin, block.areaMax) });
   query.push({ rooms: buildMinMax(block.rooms, null) });
   query.push({ bathrooms: buildMinMax(block.bathrooms, null) });
-  if (block.stratum) query.push({ stratum: buildEqual(block.stratum) });
-  if (block.years) query.push({ years: buildEqual(block.years) });
-  if (block.prop_type) query.push({ prop_type: buildIlike(block.prop_type) });
-  if (block.pool) query.push({ pool: buildEqual(block.pool) });
-  if (block.backyard) query.push({ backyard: buildEqual(block.backyard) });
-  if (block.gym) query.push({ gym: buildEqual(block.gym) });
-  if (block.bbq) query.push({ bbq: buildEqual(block.bbq) });
+  if (block.stratum)     query.push({ stratum: buildEqual(block.stratum) });
+  if (block.years)       query.push({ years: buildEqual(block.years) });
+  if (block.prop_type)   query.push({ prop_type: buildIlike(block.prop_type) });
+  if (block.pool)        query.push({ pool: buildEqual(block.pool) });
+  if (block.backyard)    query.push({ backyard: buildEqual(block.backyard) });
+  if (block.gym)         query.push({ gym: buildEqual(block.gym) });
+  if (block.bbq)         query.push({ bbq: buildEqual(block.bbq) });
   if (block.parking_lot) query.push({ parking_lot: buildEqual(block.parking_lot) });
-  if (block.elevator) query.push({ elevator: buildEqual(block.elevator) });
-  if (block.security) query.push({ security: buildEqual(block.security) });
-  if (block.garden) query.push({ garden: buildEqual(block.garden) });
-  if (block.status) query.push({ status: buildEqual(block.status) });
-  if (block.active) query.push({ active: buildEqual(block.active) });
+  if (block.elevator)    query.push({ elevator: buildEqual(block.elevator) });
+  if (block.security)    query.push({ security: buildEqual(block.security) });
+  if (block.garden)      query.push({ garden: buildEqual(block.garden) });
+  if (block.status)      query.push({ status: buildEqual(block.status) });
+  if (block.active)      query.push({ active: buildEqual(block.active) });
   return { [Sequelize.Op.and]: query };
 }
 /**
@@ -117,14 +119,42 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// /**
-//  *
-//  * @param {*} texto es un string
-//  * @returns retorna un string sin tildes
-//  */
-// function changeDiacriticos(texto) {
-//   return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-// }
+const diccionario = {
+  ü:'u',
+  é:'e',
+  â:'a',
+  ä:'a',
+  à:'a',
+  å:'a',
+  ê:'e',
+  ë:'e',
+  è:'e',
+  ï:'i',
+  î:'i',
+  ì:'i',
+  Ä:'A',
+  Å:'A',
+  É:'E',
+  ô:'o',
+  ö:'o',
+  ò:'o',
+  û:'u',
+  ù:'u',
+  ÿ:'y',
+  Ö:'O',
+  Ü:'U',
+  á:'a',
+  í:'i',
+  ó:'o',
+  ú:'u',
+};
+
+function quitarAcentos(string) {
+  console.log('string: ', string);
+  if (!string) return null;
+  console.log('string modificado: ', string.split('').map((letra) => diccionario[letra] || letra).join('').toString());
+  return string.split('').map((letra) => diccionario[letra] || letra).join('').toString();
+}
 
 module.exports = {
   buidlWhere,
@@ -136,4 +166,5 @@ module.exports = {
   isRegEx,
   buildFindByArray,
   getRandomInt,
+  quitarAcentos,
 };

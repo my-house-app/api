@@ -1,19 +1,21 @@
+const { quitarAcentos } = require('../utils');
+
 /* eslint-disable no-multi-spaces */
 function buildObjectPost(body) {
   const attributesPost = {
     active: body.active || true,
-    post_name: body.post_name,
+    post_name: quitarAcentos(body.post_name),
     premium: body.premium,
     status: body.status,
     prop_type: body.prop_type,
-    department: body.department,
-    city: body.city,
+    department: quitarAcentos(body.department),
+    city: quitarAcentos(body.city),
     street_number: body.street_number,
     longitude: Number(body.longitude),
     latitude: Number(body.latitude),
     neighborhood: body.neighborhood,
     allowAddress: body.allowAddress,
-    description: body.description,
+    description: quitarAcentos(body.description),
     stratum: Number(body.stratum),
     price: Number(body.price),
     m2: Number(body.m2),
