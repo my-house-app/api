@@ -13,9 +13,6 @@ async function getPosts(req, res) {
   const atributo = req.query.atributo           || null;
   const orden =    req.query.orden              || null;
   const block = {
-    // post_name:        req.query.post_name      || '',
-    // city:             req.query.city           || '',
-    // neighborhood:     req.query.neighborhood   || '',
     post_name:        quitarAcentos(req.query.post_name)       || '',
     city:             quitarAcentos(req.query.city)            || '',
     neighborhood:     quitarAcentos(req.query.neighborhood)    || '',
@@ -80,9 +77,10 @@ async function getPosts(req, res) {
   };
 
   if (atributo && orden) {
-    queryPost.order.push([atributo, orden]);
+    queryPost.order.pop();
+    queryPost.order.unshift([atributo, orden]);
   }
-  console.log('queryPost: ', queryPost);
+
   const { count, rows } = await Post.findAndCountAll(queryPost);
   const lastPage = Math.ceil(count / limit) || 1;
   if (page > lastPage) return res.status(404).send({ message: 'Invalid Request', lastPage });

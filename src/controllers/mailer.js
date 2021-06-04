@@ -8,6 +8,8 @@ const inlineBase64 = require('nodemailer-plugin-inline-base64');
 const { VisitDate } = require('../db');
 const { buidlBookingObject } = require('../repositorio/booking');
 
+const logo = 'https://lh3.googleusercontent.com/pw/ACtC-3d1f7Zbjgy2JdZoOoZ-a1km-O3si30DgzofokfZscWQGLpfphKVWgqLpeVDKWCxrMEvWufxWT4lvqf-4WUXDQ-aNiy8BBEUSka6vankGtUZ6j4YyoYituKojGZDWV8jMKPxYplGYIhyThN6Ie5f0i0=w805-h249-no?authuser=0';
+
 const paymentConfirmation = async (req, res) => {
   const {
     name, email, title, price, plan, date,
@@ -34,7 +36,7 @@ const paymentConfirmation = async (req, res) => {
     <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td style="padding-right: 0px;padding-left: 0px;" align="center">
-            <img align="center" border="0"  src='https://lh3.googleusercontent.com/pw/ACtC-3d1f7Zbjgy2JdZoOoZ-a1km-O3si30DgzofokfZscWQGLpfphKVWgqLpeVDKWCxrMEvWufxWT4lvqf-4WUXDQ-aNiy8BBEUSka6vankGtUZ6j4YyoYituKojGZDWV8jMKPxYplGYIhyThN6Ie5f0i0=w805-h249-no?authuser=0' alt="Logo" title="Logo"  width="200"/>
+            <img align="center" border="0"  src=${logo} alt="Logo" title="Logo"  width="200"/>
           </td>
         </tr>
       </table>
@@ -181,12 +183,7 @@ async function sendBooking(req, res) {
                 display: block;
                 overflow: hidden;">
         <div style="display: flex;flex-direction: row;justify-content: left;">
-          <img style= "width: 10rem; height: 10rem;" src="${image}" alt='logo' />
-          <div style="font-size: 24px;">
-            <h1>Booking</h1>
-            <h3>my house app s.r.l</h3>
-          </div>
-
+          <img style= "width: 10rem; height: 10rem;" src=${logo} alt='logo' />
         </div>
         <hr />
 

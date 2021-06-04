@@ -150,9 +150,7 @@ const diccionario = {
 };
 
 function quitarAcentos(string) {
-  console.log('string: ', string);
   if (!string) return null;
-  console.log('string modificado: ', string.split('').map((letra) => diccionario[letra] || letra).join('').toString());
   return string.split('').map((letra) => diccionario[letra] || letra).join('').toString();
 }
 
