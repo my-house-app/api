@@ -65,7 +65,7 @@ const posts = rawData.map(
     description: quitarAcentos(title),
     stratum: mzona && mzona.id,
     neighborhood: quitarAcentos(mbarrio) || '' /* 'To be determined' */,
-    price: mvalorventa,
+    price: mvalorventa * 10,
     m2: mareac,
     rooms: mnrocuartos,
     bathrooms: mnrobanos,
